@@ -1,0 +1,5 @@
+"id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
+"access_account_asset_appreciation_line_user","access_account_asset_appreciation_line_user","property_appreciation_board.model_account_asset_appreciation_line","property_management.group_property_user",1,1,1,0
+"access_account_asset_appreciation_line_agent","access_account_asset_appreciation_line_agent","property_appreciation_board.model_account_asset_appreciation_line","property_management.group_property_agent",1,1,1,0
+"access_account_asset_appreciation_line_manager","access_account_asset_appreciation_line_manager","property_appreciation_board.model_account_asset_appreciation_line","property_management.group_property_manager",1,1,1,1
+"access_account_asset_appreciation_line_owner","access_account_asset_appreciation_line_owner","property_appreciation_board.model_account_asset_appreciation_line","property_management.group_property_owner",1,1,1,1

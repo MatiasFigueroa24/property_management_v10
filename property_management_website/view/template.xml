@@ -1,0 +1,2068 @@
+<odoo>
+       
+        <template id="website.show_sign_in" customize_show="True" inherit_id="website.layout" name="Show Sign In">
+            <xpath expr="//ul[@id='top_menu']" position="inside">
+                <li groups="base.group_public">
+                    <a t-attf-href="/web/login">
+                        <b>Sign in</b>
+                    </a>
+                </li>
+                <!--<li>
+                    <a id="advance_search" href="#">
+                    <i class="fa fa-search" /> Search</a>
+                </li>-->
+                <li>
+                    <a t-att-href="website.social_facebook" t-if="website.social_facebook">
+                    <i class="fa fa-facebook-square" />
+                    </a>
+                </li>
+                <li>
+                    <a t-att-href="website.social_twitter" t-if="website.social_twitter">
+                    <i class="fa fa-twitter" />
+                    </a>
+                </li>
+                <li>
+                    <a t-att-href="website.social_linkedin" t-if="website.social_linkedin">
+                    <i class="fa fa-linkedin" />
+                    </a>
+                </li>
+                <li>
+                    <a t-att-href="website.social_googleplus" t-if="website.social_googleplus" rel="publisher">
+                    <i class="fa fa-google-plus-square" />
+                    </a>
+                </li>
+            </xpath>
+        </template>
+        <!--<template id="advance_search">
+            <div class="modal fade" tabindex="-1" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&amp;times;</span>
+                            </button>
+                            <h4 class="modal-title">Modal title</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-6">ddddd</div>
+                                <div class="col-md-6">fffff</div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary">Save changes</button>
+                        </div>
+                    </div>
+                    &lt;!&ndash; /.modal-content &ndash;&gt;
+                </div>
+                &lt;!&ndash; /.modal-dialog &ndash;&gt;
+            </div>
+            &lt;!&ndash; /.modal &ndash;&gt;
+        </template>-->
+        <template id="custom_footer" name="Custom Footer">
+            <section class="custom-footer">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <!--<div class='col-md-6 col-sm-12 col-xs-12'>-->
+                            <ul class="footer-info">
+                                <li class="footer-info-item">
+                                    <t t-esc="website.company_id.phone" />
+                                </li>
+                                <li class="footer-info-item">
+                                    <t t-esc="website.company_id.email" />
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-xs-6">
+                            <!--col-xs-6 col-sm-6 col-md-3 mb16 property-images-->
+                            <ul class="footer-info">
+                                <li class="footer-info-item">
+                                    Jobs
+                                </li>
+                                <li class="footer-info-item">
+                                    Terms &amp; Conditions
+                                </li>
+                                <li class="footer-info-item">
+                                    Privacy Policy
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </template>
+        
+
+
+    <template id="website.layout" name="Main layout">
+    <t t-call="web.layout">
+        <t t-set="html_data" t-value="{
+            'lang': lang and lang.replace('_', '-'),
+            'data-website-id': website.id if (editable or translatable) and website else None,
+            'data-editable': '1' if editable else None,
+            'data-translatable': '1' if translatable else None,
+            'data-edit_translations': '1' if edit_translations else None,
+            'data-view-xmlid': xmlid if editable or translatable else None,
+            'data-main-object': repr(main_object) if editable or translatable else None,
+            'data-oe-company-name': res_company.name
+        }"/>
+        <t t-if="not title">
+            <t t-if="not additional_title and main_object and 'name' in main_object">
+                <t t-set="additional_title" t-value="main_object.name"/>
+            </t>
+            <t t-if="main_object and 'website_meta_title' in main_object and main_object.website_meta_title">
+                <t t-set="title" t-value="main_object.website_meta_title"/>
+            </t>
+            <t t-else="">
+                <t t-set="title"><t t-if="additional_title"><t t-raw="additional_title"/> | </t><t t-esc="(website or res_company).name"/></t>
+            </t>
+        </t>
+<!--        <t t-set="x_icon" t-value="'/web/image/website/%s/favicon/' % website.id"/-->
+        <t t-set="head_website">
+            <meta name="description" t-att-content="main_object and 'website_meta_description' in main_object
+                and main_object.website_meta_description or website_meta_description"/>
+            <meta name="keywords" t-att-content="main_object and 'website_meta_keywords' in main_object
+                and main_object.website_meta_keywords or website_meta_keywords"/>
+            <meta name="generator" content="Odoo"/>
+
+            <!-- OpenGraph tags for Facebook sharing -->
+            <meta property="og:title" t-att-content="additional_title" />
+            <meta property="og:site_name" t-att-content="res_company.name" />
+            <t t-if="main_object and 'plain_content' in main_object and main_object.plain_content">
+                <t t-set="og_description" t-value="main_object.plain_content[0:500]"/>
+                <meta property="og:description" t-att-content="og_description" />
+                <meta property='og:image' t-att-content="request.httprequest.url_root+'logo.png'"/>
+                <meta property='og:url' t-att-content="request.httprequest.url_root+request.httprequest.path[1:end]"/>
+            </t>
+            <link rel="shortcut icon" href="/property_management_website/static/src/img/favicon.ico" type="image/x-icon" />
+            <t t-set="languages" t-value="website.get_languages() if website else None"/>
+            <t t-if="request and request.website_multilang and website">
+                <t t-foreach="website.get_alternate_languages(request.httprequest)" t-as="lg">
+                    <link rel="alternate" t-att-hreflang="lg['hreflang']" t-att-href="lg['href']"/>
+                    
+                </t>
+            </t>
+            
+            <script type="text/javascript">
+                odoo.session_info = {
+                    is_superuser: <t t-esc="json.dumps(request.env.user._is_superuser())"/>,
+                    is_frontend: true,
+                };
+            </script>
+
+            <t t-call-assets="web.assets_common" t-js="false"/>
+            <t t-call-assets="web.assets_frontend" t-js="false"/>
+            <t t-call-assets="web_editor.summernote" t-js="false" groups="website.group_website_publisher"/>
+            <t t-call-assets="web_editor.assets_editor" t-js="false" groups="website.group_website_publisher"/>
+            <t t-call-assets="website.assets_editor" t-js="false" groups="website.group_website_publisher"/>
+
+            <t t-call-assets="web.assets_common" t-css="false"/>
+            <t t-call-assets="web.assets_frontend" t-css="false"/>
+            <t t-call-assets="web_editor.summernote" t-css="false" groups="website.group_website_publisher"/>
+            <t t-call-assets="web_editor.assets_editor" t-css="false" groups="website.group_website_publisher"/>
+            <t t-call-assets="website.assets_editor" t-css="false" groups="website.group_website_publisher"/>
+        </t>
+        <t t-set="head" t-value="head_website + (head or '')"/>
+
+        <div id="wrapwrap" t-att-class="pageName or ''">
+            <header>
+                <div id="wrapper" class="hidden-md hidden-lg">
+                                <div class="overlay"></div>
+                                <nav class="navbar navbar-inverse navbar-fixed-top" id="sidebar-wrapper" role="navigation">
+                                    <ul class="nav sidebar-nav">
+                                        <li class="sidebar-brand">
+                                            <div class="col-md-12">
+                                                <div class="col-xs-3">
+                                                    <a t-att-href="website.social_facebook" t-if="website.social_facebook">
+                                                        <i class="fa fa-facebook-square" />
+                                                    </a>
+                                                </div>
+                                                <div class="col-xs-3">
+                                                    <a t-att-href="website.social_twitter" t-if="website.social_twitter">
+                                                        <i class="fa fa-twitter" />
+                                                    </a>
+                                                </div>
+                                                <div class="col-xs-3">
+                                                    <a t-att-href="website.social_linkedin" t-if="website.social_linkedin">
+                                                        <i class="fa fa-linkedin" />
+                                                    </a>
+                                                </div>
+                                                <div class="col-xs-3">
+                                                    <a t-att-href="website.social_googleplus" t-if="website.social_googleplus" rel="publisher">
+                                                        <i class="fa fa-google-plus-square" />
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <a href="/">Home</a>
+                                        </li>
+                                        <li>
+                                            <a href="/sell">SELL</a>
+                                        </li>
+                                        <li>
+                                            <a href="/buy">BUY</a>
+                                        </li>
+                                        <li>
+                                            <a href="/rent">RENT</a>
+                                        </li>
+                                        <li>
+                                            <a href="/contactus">Contact</a>
+                                        </li>
+                                        <li groups="property_management.group_property_user">
+                                            <a href="/my_properties">My Properties</a>
+                                        </li>
+                                        <li t-if="website.user_id == user_id">
+                                            <a href="/web/login">Sign In</a>
+                                        </li>
+                                        <li class="dropdown" t-ignore="true" t-if="website.user_id != user_id">
+                                            <a id="user_account_logout" href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                                <b>
+                                                    <span t-esc="user_id.name" />
+                                                    <span class="caret"></span>
+                                                </b>
+                                            </a>
+                                            <ul class="dropdown-menu js_usermenu" role="menu">
+                                                <li groups="property_management_website.group_property_website_backend">
+                                                    <a href="/web" role="menuitem">My Account</a>
+                                                </li>
+                                                <li>
+                                                    <a t-attf-href="/web/session/logout?redirect=/" role="menuitem">Logout</a>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </nav>
+                                <div id="page-content-wrapper">
+                                    <button type="button" class="hamburger is-closed" data-toggle="offcanvas">
+                                        <span class="hamb-top"></span>
+                                        <span class="hamb-middle"></span>
+                                        <span class="hamb-bottom"></span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="navbar navbar-default navbar-static-top navbar-fixed-top hidden-sm hidden-xs" style="top: inherit;">
+                                <div class="container">
+                                    <div class="navbar-header">
+                                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-top-collapse">
+                                            <span class="sr-only">Toggle navigation</span>
+                                            <span class="icon-bar"></span>
+                                            <span class="icon-bar"></span>
+                                            <span class="icon-bar"></span>
+                                        </button>
+                                        <a class="navbar-brand" href="/" t-field="res_company.name" />
+                                    </div>
+                                    <div class="collapse navbar-collapse navbar-top-collapse">
+                                        <ul class="nav navbar-nav navbar-right" id="top_menu">
+                                            <t t-foreach="website.menu_id.child_id" t-as="submenu">
+                                                <t t-call="website.submenu" /></t>
+                                            <li class="divider" t-ignore="true" t-if="website.user_id != user_id" />
+                                            <li class="dropdown" t-ignore="true" t-if="website.user_id != user_id">
+                                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                                    <b>
+                                                        <span t-esc="user_id.name" />
+                                                        <span class="caret"></span>
+                                                    </b>
+                                                </a>
+                                                <ul class="dropdown-menu js_usermenu" role="menu">
+                                                    <li groups="property_management_website.group_property_website_backend">
+                                                        <a href="/web" role="menuitem">My Account</a>
+                                                    </li>
+                                                    <li>
+                                                        <a t-attf-href="/web/session/logout?redirect=/" role="menuitem">Logout</a>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+            </header>
+            <main>
+                <t t-raw="0"/>
+            </main>
+            <footer>
+                <div id="footer">
+                </div>
+            </footer>
+        </div>
+        <script id='tracking_code' t-if="website and website.google_analytics_key and not editable">
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+            })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+            ga('create', _.str.trim('<t t-esc="website.google_analytics_key"/>'), 'auto');
+            ga('send','pageview');
+        </script>
+    </t>
+</template>
+
+
+
+        <template id="header" inherit_id="website.layout">
+            <xpath expr="//header//ul[@id='top_menu']/li" position="before">
+                <li groups="property_management.group_property_user">
+                    <a href="/my_properties">
+                      My Properties
+                  </a>
+                </li>
+            </xpath>
+        </template>
+        <template id="testimonials">
+            <section>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12" data-wow-delay="0.2s">
+                            <div class="carousel slide" data-ride="carousel" id="quote-carousel">
+                                <!-- Bottom Carousel Indicators -->
+                                <ol class="carousel-indicators">
+                                    <li data-target="#quote-carousel" data-slide-to="0" class="active">
+                                        <img class="img-responsive" src="https://s3.amazonaws.com/uifaces/faces/twitter/brad_frost/128.jpg" alt="" />
+                                    </li>
+                                    <li data-target="#quote-carousel" data-slide-to="1">
+                                        <img class="img-responsive" src="https://s3.amazonaws.com/uifaces/faces/twitter/rssems/128.jpg" alt="" />
+                                    </li>
+                                    <li data-target="#quote-carousel" data-slide-to="2">
+                                        <img class="img-responsive" src="https://s3.amazonaws.com/uifaces/faces/twitter/adellecharles/128.jpg" alt="" />
+                                    </li>
+                                </ol>
+                                <!-- Carousel Slides / Quotes -->
+                                <div class="carousel-inner text-center">
+                                    <!-- Quote 1 -->
+                                    <div class="item active">
+                                        <blockquote>
+                                            <div class="row">
+                                                <div class="col-sm-8 col-sm-offset-2">
+                                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. !</p>
+                                                    <small>Someone famous</small>
+                                                </div>
+                                            </div>
+                                        </blockquote>
+                                    </div>
+                                    <!-- Quote 2 -->
+                                    <div class="item">
+                                        <blockquote>
+                                            <div class="row">
+                                                <div class="col-sm-8 col-sm-offset-2">
+                                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. </p>
+                                                    <small>Someone famous</small>
+                                                </div>
+                                            </div>
+                                        </blockquote>
+                                    </div>
+                                    <!-- Quote 3 -->
+                                    <div class="item">
+                                        <blockquote>
+                                            <div class="row">
+                                                <div class="col-sm-8 col-sm-offset-2">
+                                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. .</p>
+                                                    <small>Someone famous</small>
+                                                </div>
+                                            </div>
+                                        </blockquote>
+                                    </div>
+                                </div>
+                                <!-- Carousel Buttons Next/Prev -->
+                                <!--<a data-slide="prev" href="#quote-carousel" class="left carousel-control"><i class="fa fa-chevron-left"></i></a>
+                                <a data-slide="next" href="#quote-carousel" class="right carousel-control"><i class="fa fa-chevron-right"></i></a>-->
+                                <a class="left carousel-control" href="#quote-carousel" role="button" data-slide="prev">
+                                    <span class="fa fa-chevron-left"></span>
+                                </a>
+                                <a class="right carousel-control" href="#quote-carousel" role="button" data-slide="next">
+                                    <span class="fa fa-chevron-right"></span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </template>
+        <template id="view_pagination" name="website Pagination">
+            <div class="col-md-3 pull-right products_pager" style="text-align:right;margin-top: -1%;width: inherit;">
+                <ul t-if="pager['page_count'] &gt; 1" t-attf-class="#{ classname or '' } pagination" t-att-style="style or ''">
+                    <li t-att-class=" 'disabled' if pager['page']['num'] == 1 else '' ">
+                        <a t-att-href=" pager['page_previous']['url'] if pager['page']['num'] != 1 else ''"><![CDATA[&laquo;]]></a>
+                    </li>
+                    <t t-foreach="pager['pages']" t-as="page">
+                        <li t-att-class=" 'active' if page['num'] == pager['page']['num'] else '' ">
+                            <a t-att-href="page['url']" t-raw="page['num']"></a>
+                        </li>
+                    </t>
+                    <li t-att-class=" 'disabled' if pager['page']['num'] == pager['page_count'] else '' ">
+                        <a t-att-href="pager['page_next']['url'] if pager['page']['num'] != pager['page_count'] else ''"><![CDATA[&raquo;]]></a>
+                    </li>
+                </ul>
+            </div>
+        </template>
+        <template id="website.homepage" name="Website Homepage Inherit" page="True">
+            <t t-call="website.layout">
+                <t t-call="property_management_website.homepage_content" />
+            </t>
+        </template>
+        <template id="common_form_rent_buy_homepage">
+            <div class="col-sm-3 col-sm-offset-0 col-xs-10 col-xs-offset-1" style="padding: 0px;height: 40px !important;border-radius: 0px;border-radius: 0px;border-left: 1px solid #ccc;cursor:pointer;">
+                <ul class="nav navbar-nav nav-pills" role="tablist" data-dropdown-in="fadeInDown" data-dropdown-out="fadeOutUp" style="height:inherit;width: 100%;border-radius: 0px;">
+                    <li role="presentation" class="dropdown" style="height:inherit;width: 100%;border-radius: 0px;">
+                        <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true" style="height:inherit;background-color: #fff;border-radius: 0px;padding-top: 12px;text-align:left;">
+                          Property Type
+                          <span class="caret" style="float:right;margin-top: 7px;"></span></a>
+                        <ul class="dropdown-menu" style="width: 230%;">
+                            <li>
+                                <div class="row" style="margin-right: 0px;">
+                                    <t t-foreach="property_types" t-as="one_property_type">
+                                        <div class="col-md-4 col-sm-6 col-xs-12">
+                                            <div class="checkbox">
+                                                <label>
+                                                    <input type="checkbox" id="check_property" t-att-data-property_type_id="one_property_type.id" />
+                                                    <t t-esc="one_property_type.name" />
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </t>
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-sm-2 col-sm-offset-0 col-xs-10 col-xs-offset-1" style="padding: 0px;height: 40px !important;border-radius: 0px;border-radius: 0px;border-right: 1px solid #ccc;border-left: 1px solid #ccc;cursor:pointer;">
+                <ul class="nav navbar-nav nav-pills" role="tablist" data-dropdown-in="fadeInDown" data-dropdown-out="fadeOutUp" style="height:inherit;width: 100%;border-radius: 0px;">
+                    <li role="presentation" class="dropdown" style="height:inherit;width: 100%;border-radius: 0px;">
+                        <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true" style="height:inherit;background-color: #fff;border-radius: 0px;padding-top: 12px;text-align:left;">
+                          Budget
+                          <span class="caret" style="float:right;margin-top: 7px;"></span></a>
+                        <ul class="dropdown-menu" style="padding:10px;">
+                            <li>
+                                <div class="home_min_max">
+                                    <div class="home_page_filter_price">
+                                        <div class="">
+                                            <div style="text-align:center;" class="price-slider col-xs-12 ">
+                                                <input type="text" id="amount" readonly="true" style="border:0; font-weight:bold; background-color: rgba(255, 255, 255, 0.0);text-align: center;" />
+                                            </div>
+                                            <div style="text-align:left;" class="col-xs-8">Min<input type="hidden" name="min_range" id="min_property_range_id" /></div>
+                                            <div style="text-align:right;" class="col-xs-4">Max<input type="hidden" name="max_range" id="max_property_range_id" /></div>
+                                        </div>
+                                        <!-- Price Slider -->
+                                        <div class="form-group price-slider col-xs-12 mt8" style="padding-left:4px;">
+                                            <div id="slider_range">
+                                                <input type="hidden" name="min_max_range" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </template>
+        <template name="Homepage Content" id="homepage_content">
+            <!--<script>
+                $('.dropdown').on('show.bs.dropdown', function(e){
+                  $(this).find('.dropdown-menu').first().stop(true, true).slideDown();
+                });
+                $('.dropdown').on('hide.bs.dropdown', function(e){
+                  $(this).find('.dropdown-menu').first().stop(true, true).slideUp();
+                });
+            </script>-->
+            <section class="hero-section homepage-content">
+                <div class="hero-inner">
+                    <img src="/property_management_website/static/src/img/skyscrapers.jpg" class="img-responsive hero-image" />
+                    <div class="hero-content">
+                        <div class="tab">
+                            <div class="tab-cell">
+                                <!--<h1 class='hero-text'><a href='#'><t t-esc='website.company_id.name'/></a></h1>-->
+                                <div class="row">
+                                    <div class="col-md-8 col-md-offset-2 col-xs-10 col-xs-offset-1 search_tab_homepage">
+                                        <ul class="nav nav-tabs" id="myTab">
+                                            <li class="active" style="margin-left:30px;">
+                                                <a data-target="#buy" data-toggle="tab">Buy</a>
+                                            </li>
+                                            <li style="margin-left:5px;">
+                                                <a data-target="#rent" data-toggle="tab">Rent</a>
+                                            </li>
+                                        </ul>
+                                        <div class="tab-content">
+                                            <div class="tab-pane active" id="buy">
+                                                <!--<form id="searchForm" class="form_filter_sale" name="body_property" method="post">-->
+                                                <form id="searchsaleForm" class="form_filter_sale" name="body_property" method="post">
+                                                    <div id="test">
+                                                        <!--<input class="autocomplete" placeholder="Enter your address" type="text"></input>-->
+                                                        <div class="col-sm-6 col-sm-offset-0 col-xs-10 col-xs-offset-1 text-right" style="padding: 0px;height: 40px !important;border-radius: 0px;">
+                                                            <div class="input-group" style="width:101%;height:inherit;border-radius: 0px;">
+                                                                <span class="input-group-addon" style="height:inherit;">
+                                                                    <i class="fa fa-map-marker fa-lg"></i>
+                                                                </span>
+                                                                <input type="text" style="height:inherit;border-radius: 0px;border-top: none;border-bottom: none;" class="autocomplete form-control input-lg location_input_auto" id="location_input" name="city" placeholder="Enter Landmark" />
+                                                            </div>
+                                                        </div>
+                                                        <input class="field street_name" id="street_name" disabled="true" type="hidden"></input>
+                                                        <input class="field street_number" id="street_number" disabled="true" type="hidden"></input>
+                                                        <input class="field route" id="route" disabled="true" type="hidden"></input>
+                                                        <input class="field locality" id="locality" disabled="true" type="hidden"></input>
+                                                        <input class="field administrative_area_level_1" id="administrative_area_level_1" disabled="true" type="hidden"></input>
+                                                        <input class="field postal_code" id="postal_code" disabled="true" type="hidden"></input>
+                                                        <input class="field country" id="country" disabled="true" type="hidden"></input>
+                                                    </div>
+                                                    <t t-call="property_management_website.common_form_rent_buy_homepage" />
+                                                    <div class="col-sm-1 col-sm-offset-0 col-xs-10 col-xs-offset-1" style="padding: 0px;height: 40px !important;padding-left:5px;padding-right:5px;">
+                                                        <div data-click_value="buy" id="sale_btn_id" style="border-color: #444;background-color: #444;border-radius: 5px;height: inherit;">
+                                                            <i class="fa fa-search fa-2x" style="color:white;padding-top: 8px;"></i>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                            <div class="tab-pane" id="rent">
+                                                <form id="searchForm" class="form_filter_rent" name="body_property" method="post">
+                                                    <!--<form id="searchrentForm" class="form_filter_sale" name="body_property" method="post">-->
+                                                    <div id="test2">
+                                                        <div class="col-sm-6 col-sm-offset-0 col-xs-10 col-xs-offset-1 text-right" style="padding: 0px;height: 40px !important;border-radius: 0px;">
+                                                            <div class="input-group" style="width:101%;height:inherit;border-radius: 0px;">
+                                                                <span class="input-group-addon" style="height:inherit;">
+                                                                    <i class="fa fa-map-marker fa-lg"></i>
+                                                                </span>
+                                                                <input type="text" style="height:inherit;border-radius: 0px;border-top: none;border-bottom: none;" class="autocomplete form-control input-lg location_input_auto" id="location_input" name="city" placeholder="Enter Landmark" />
+                                                            </div>
+                                                        </div>
+                                                        <input class="field street_name" id="street_name" disabled="true" type="hidden"></input>
+                                                        <input class="field street_number" id="street_number" disabled="true" type="hidden"></input>
+                                                        <input class="field route" id="route" disabled="true" type="hidden"></input>
+                                                        <input class="field locality" id="locality" disabled="true" type="hidden"></input>
+                                                        <input class="field administrative_area_level_1" id="administrative_area_level_1" disabled="true" type="hidden"></input>
+                                                        <input class="field postal_code" id="postal_code" disabled="true" type="hidden"></input>
+                                                        <input class="field country" id="country" disabled="true" type="hidden"></input>
+                                                    </div>
+                                                    <t t-call="property_management_website.common_form_rent_buy_homepage" />
+                                                    <div class="col-sm-1 col-sm-offset-0 col-xs-10 col-xs-offset-1" style="padding: 0px;height: 40px !important;padding-left:5px;padding-right:5px;">
+                                                        <div data-click_value="rent" id="rent_btn_id" style="border-color: #444;background-color: #444;border-radius: 5px;height: inherit;">
+                                                            <i class="fa fa-search fa-2x" style="color:white;padding-top: 8px;"></i>
+                                                            <!--&lt;!&ndash;<input type="submit" value="SEARCH" id="btnPropertySearch" class="fa fa-search fa-3x"/>&ndash;&gt;-->
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <div class="rest feature-properties">
+                <t t-if="all_property_objs">
+                    <section class="recent-viewed-section section">
+                        <div class="container">
+                            <div class="row recent-viewed-header text-center">
+                                <div class="col-md-12 mb16">
+                                    <h3>FEATURED ON LEASE</h3>
+                                </div>
+                                <a class="button responsive-width mb16" id="view_all_asset_lease" style="cursor:pointer;">View all Lease</a>
+                            </div>
+                            <t t-set="property_display_total_one_by_one" t-value="1" />
+                            <t t-foreach="all_property_objs" t-as="account_asset_one_lease">
+                                <t t-if="(account_asset_one_lease.state == 'draft')">
+                                    <t t-if="property_display_total_one_by_one in [1,2,3,4,5,6]">
+                                        <t t-call="property_management_website.dosplay_properties" />
+                                    </t>
+                                    <t t-set="property_display_total_one_by_one" t-value="property_display_total_one_by_one+1" />
+                                </t>
+                            </t>
+                            <!--<t t-call='property_management_website.featured_lease_content'/>-->
+                        </div>
+                    </section>
+                    <hr />
+                </t>
+                <t t-if="all_property_objs">
+                    <section class="recent-viewed-section section">
+                        <div class="container">
+                            <div class="row recent-viewed-header text-center">
+                                <div class="col-md-12 mb16">
+                                    <h3>FEATURED SALES</h3>
+                                </div>
+                                <a class="button responsive-width mb16" id="view_all_asset_sale" style="cursor:pointer;">View all Sales</a>
+                            </div>
+                            <t t-set="property_display_total_one_by_one" t-value="1" />
+                            <t t-foreach="all_property_objs" t-as="account_asset_one_lease">
+                                <t t-if="(account_asset_one_lease.state == 'close')">
+                                    <t t-if="property_display_total_one_by_one in [1,2,3,4,5,6]">
+                                        <t t-call="property_management_website.dosplay_properties" />
+                                    </t>
+                                    <t t-set="property_display_total_one_by_one" t-value="property_display_total_one_by_one+1" />
+                                </t>
+                            </t>
+                            <!--<t t-call='property_management_website.featured_sales_content'/>-->
+                        </div>
+                    </section>
+                    <hr />
+                </t>
+                <t t-call="property_management_website.testimonials" />
+                <hr />
+                <t t-if="all_property_objs">
+                    <t t-set="one_time_past_sale_display" t-value="1"/>
+                    <section class="featured-past-sell-section section">
+                        <div class="container">
+                            <t t-set="property_display_total_one_by_one" t-value="1" />
+                            <t t-foreach="all_property_objs" t-as="account_asset_one_lease">
+                                <t t-if="(account_asset_one_lease.state == 'sold')">
+                                    <t t-if="one_time_past_sale_display == 1">
+                                        <div class="row recent-viewed-header text-center">
+                                            <div class="col-md-12 mb16">
+                                                <h3>FEATURED PAST SALES</h3>
+                                            </div>
+                                            <a class="button responsive-width mb16" id="view_all_past_sales" style="cursor:pointer;">View all Past Sales</a>
+                                        </div>
+                                        <t t-set="one_time_past_sale_display" t-value="one_time_past_sale_display + 1"/>
+                                    </t>
+                                    <t t-if="property_display_total_one_by_one in [1,2,3,4,5,6]">
+                                        <t t-call="property_management_website.dosplay_properties" />
+                                    </t>
+                                    <t t-set="property_display_total_one_by_one" t-value="property_display_total_one_by_one+1" />
+                                </t>
+                            </t>
+                        </div>
+                    </section>
+                </t>
+                <t t-if="all_property_objs">
+                    <t t-set="one_time_past_lease_display" t-value="1"/>
+                    <section class="featured-past-sell-section section">
+                        <div class="container">
+                            <t t-set="property_display_total_one_by_one" t-value="1" />
+                            <t t-foreach="all_property_objs" t-as="account_asset_one_lease">
+                                <t t-if="(account_asset_one_lease.state == 'normal' or account_asset_one_lease.state == 'book')">
+                                    <t t-if="one_time_past_lease_display == 1">
+                                        <div class="row recent-viewed-header text-center">
+                                            <div class="col-md-12 mb16">
+                                                <h3>FEATURED PAST LEASE</h3>
+                                            </div>
+                                            <a class="button responsive-width mb16" id="view_all_past_lease" style="cursor:pointer;">View all Past Lease</a>
+                                        </div>
+                                        <t t-set="one_time_past_lease_display" t-value="one_time_past_lease_display + 1"/>
+                                    </t>
+                                    <t t-if="property_display_total_one_by_one in [1,2,3,4,5,6]">
+                                        <t t-call="property_management_website.dosplay_properties" />
+                                    </t>
+                                    <t t-set="property_display_total_one_by_one" t-value="property_display_total_one_by_one+1" />
+                                </t>
+                            </t>
+                        </div>
+                    </section>
+                </t>
+                <t t-call="property_management_website.custom_footer" />
+            </div>
+        </template>
+        <template name="All Aseets Lease" id="allassetlease_content">
+            <div class="rest feature-properties">
+                <section class="recent-viewed-section section" id="allassetlease_section">
+                    <div class="container">
+                        <div class="row allassetlease_section_first_row" style="position: fixed;width: inherit;z-index: 1;background: #f5f1ed;">
+                            <div class="col-md-3 col-xs-12" id="display_saved_properties">
+                                <input type="hidden" id="property_type" name="property_type" t-att-value="property_type" />
+                                <ul class="nav navbar-nav" style="width: 100%;">
+                                    <li style="cursor:pointer">
+                                        <a id="view_all_asset_lease" class="active">Sales</a>
+                                    </li>
+                                    <li style="cursor:pointer">
+                                        <a id="view_all_asset_sale_saved"></a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <t t-call="property_management_website.search_property_content" />
+                        </div>
+                        <div class="row recent-viewed-header text-center">
+                            <div class="col-md-12 mb16">
+                                <h3>FEATURED ON LEASE</h3>
+                            </div>
+                        </div>
+                        <t t-if="pager">
+                            <div class="row">
+                                <t t-call="property_management_website.view_pagination" />
+                            </div>
+                        </t>
+                        <t t-call="property_management_website.featured_lease_content" />
+                    </div>
+                </section>
+                <t t-call="property_management_website.custom_footer" />
+            </div>
+        </template>
+        <template id="featured_lease_content" name="Featured Lease Content">
+            <div class="row recent-viewed-content">
+                <t t-foreach="all_property_objs" t-as="account_asset_one_lease">
+                    <t t-if="(account_asset_one_lease.state == 'draft')">
+                        <t t-call="property_management_website.dosplay_properties" />
+                    </t>
+                </t>
+            </div>
+        </template>
+        <template id="display_property_content">
+            <t t-if="account_asset_one_lease.property_photo_ids">
+                <t t-set="image_display" t-value="0" />
+                <t t-foreach="account_asset_one_lease.property_photo_ids" t-as="one_property_photo_id">
+                    <t t-if="one_property_photo_id.secondary_photo">
+                        <t t-if="account_asset_one_lease.image">
+                            <div id="img_hover">
+                                <img class="img-responsive" id="property_image1" t-att-value="one_property_photo_id.photos" t-att-src="website.image_url(one_property_photo_id, 'photos')" />
+                                <img class="img-responsive listing-item-additional" id="property_image2" t-att-value="account_asset_one_lease.image" t-att-src="website.image_url(account_asset_one_lease, 'image')" />
+                            </div>
+                        </t>
+                        <t t-if="not account_asset_one_lease.image">
+                            <img class="img-responsive" id="property_image11" t-att-value="one_property_photo_id.photos" t-att-src="website.image_url(one_property_photo_id, 'photos')" />
+                        </t>
+                        <t t-set="image_display" t-value="image_display+1" />
+                    </t>
+                </t>
+            </t>
+            <t t-if="not image_display">
+                <img class="img-responsive" id="property_image11" t-att-value="account_asset_one_lease.image" t-att-src="website.image_url(account_asset_one_lease, 'image')" />
+            </t>
+            <!--code for display properties informations-->
+            <div class="display_property_area_bed_bath">
+                <div class="col-xs-4 property_area">
+                    <i class="fa fa-home" aria-hidden="true"></i>
+                    <t t-esc="'{0:,.2f}'.format(float(account_asset_one_lease.gfa_feet))" /><![CDATA[&nbsp;]]>Sqft
+                </div>
+                <div class="col-xs-4 property_bedrooms">
+                    <t t-esc="account_asset_one_lease.bedroom" /><![CDATA[&nbsp;]]>Bedrooms
+                </div>
+                <div class="col-xs-4 property_bathrooms">
+                    <i class="fa fa-tty" aria-hidden="true"></i>
+                    <t t-esc="account_asset_one_lease.bathroom" /><![CDATA[&nbsp;]]>Bathrooms
+                </div>
+            </div>
+            <hr style="border-top: 1px solid #ff5722 !important;" />
+            <div class="property_name_address">
+            <!--<div class="col-xs-12">-->
+                <div t-att-data-lease_id="account_asset_one_lease.id" class="property_name" style="cursor:pointer;">
+                    <t t-esc="account_asset_one_lease.name" />
+                </div>
+                <br />
+                <div class="property_address">
+                    <i class="fa fa-map-marker" aria-hidden="true"></i><![CDATA[&nbsp;]]><div class="property_street_city"><t t-esc="account_asset_one_lease.street" /><t t-esc="account_asset_one_lease.city" /></div></div>
+                <hr style="margin-top:10px;margin-bottom:10px;" />
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="col-xs-9" style="color: #222222;font-size: 16px;">
+                            <t t-esc="'{0:,.2f}'.format(float(account_asset_one_lease.total_price))" />
+                        </div>
+                        <!--<div class="social_share_property" style="cursor:pointer">
+                            <i class="fa fa-share-alt fa-lg col-xs-1 col-sm-1 col-md-1 col-lg-1" aria-hidden="true"></i>
+                        </div>-->
+                        <div class="social_share_property">
+                            <ul class="nav navbar-nav nav-pills col-xs-1" role="tablist" data-dropdown-in="fadeInDown" data-dropdown-out="fadeOutUp">
+                                <li role="presentation" class="dropdown col-xs-1" style="padding: 0;cursor:pointer;">
+                                    <a class="dropdown-toggle col-xs-1" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true" style="padding:0">
+                                        <i class="fa fa-share-alt fa-lg col-xs-1" style="color: #444;padding:0"></i>
+                                    </a>
+                                    <ul class="dropdown-menu" style="padding: 12px;background-color: #FFF;box-shadow: 0px 6px 12px 0px rgba(0, 0, 0, 0.176);z-index: 5;border: 1px solid rgba(0, 0, 0, 0.15);margin-top:5px;">
+                                        <li>
+                                            <div style="cursor:pointer;">
+                                                <ul class="rrssb-buttons clearfix" style="padding: 2%;">
+                                                    <li class="rrssb-facebook col-xs-4">
+                                                        <!--  Replace with your URL. For best results, make sure you page has the proper FB Open Graph tags in header: https://developers.facebook.com/docs/opengraph/howtos/maximizing-distribution-media-content/ -->
+                                                        <!--<a href="https://www.facebook.com/sharer/sharer.php?u=http://kurtnoble.com/labs/rrssb/index.html" class="popup">-->
+                                                        <!--<a t-attf-href="https://www.facebook.com/sharer/sharer.php?u=http://pmsscs.localtunnel.me/selected_property_page?id=#{account_asset_one_lease.id}" class="popup" style="padding: 0;">-->
+                                                        <a t-attf-href="https://www.facebook.com/sharer/sharer.php?u=#{facebook_share}/selected_property_page?id=#{account_asset_one_lease.id}" class="popup" style="padding: 0;">
+                                                            <!--<span class="rrssb-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 29 29"><path d="M26.4 0H2.6C1.714 0 0 1.715 0 2.6v23.8c0 .884 1.715 2.6 2.6 2.6h12.393V17.988h-3.996v-3.98h3.997v-3.062c0-3.746 2.835-5.97 6.177-5.97 1.6 0 2.444.173 2.845.226v3.792H21.18c-1.817 0-2.156.9-2.156 2.168v2.847h5.045l-.66 3.978h-4.386V29H26.4c.884 0 2.6-1.716 2.6-2.6V2.6c0-.885-1.716-2.6-2.6-2.6z"/></svg></span>-->
+                                                            <!--<span class="rrssb-text">facebook</span>-->
+                                                            <i class="fa fa-facebook-square fa-3x col-xs-1" style="padding: 0;"></i>
+                                                        </a>
+                                                    </li>
+                                                    <li class="rrssb-twitter col-xs-4">
+                                                        <!-- Replace href with your Meta and URL information  -->
+                                                        <!--<a href="https://twitter.com/intent/tweet?text=Ridiculously%20Responsive%20Social%20Sharing%20Buttons%20by%20%40dbox%20and%20%40joshuatuscan%3A%20http%3A%2F%2Fkurtnoble.com%2Flabs%2Frrssb%20%7C%20http%3A%2F%2Fkurtnoble.com%2Flabs%2Frrssb%2Fmedia%2Frrssb-preview.png"-->
+                                                        <!--<a t-attf-href="https://twitter.com/intent/tweet?text=#{account_asset_one_lease.name}%20http%3A%2F%2Fpmsscs.localtunnel.me%2Fselected_property_page?id=#{account_asset_one_lease.id}%20%7C%20http%3A%2F%2Fkurtnoble.com%2Flabs%2Frrssb"-->
+                                                        <!--<a t-attf-href="https://twitter.com/intent/tweet?text=#{account_asset_one_lease.name}%20http%3A%2F%2Fpmsscs.localtunnel.me%2Fselected_property_page?id=#{account_asset_one_lease.id}%20%7C%20http%3A%2F%2Fpmsscs.localtunnel.me%2Fselected_property_page?id=#{account_asset_one_lease.id}" class="popup" style="padding: 0;">-->
+                                                        <a t-attf-href="https://twitter.com/intent/tweet?text=#{account_asset_one_lease.name}%20http%3A%2F%2F#{twitter_share}%2Fselected_property_page?id=#{account_asset_one_lease.id}%20%7C%20http%3A%2F%2F#{twitter_share}%2Fselected_property_page?id=#{account_asset_one_lease.id}" class="popup" style="padding: 0;">
+                                                            <!--<span class="rrssb-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 28"><path d="M24.253 8.756C24.69 17.08 18.297 24.182 9.97 24.62a15.093 15.093 0 0 1-8.86-2.32c2.702.18 5.375-.648 7.507-2.32a5.417 5.417 0 0 1-4.49-3.64c.802.13 1.62.077 2.4-.154a5.416 5.416 0 0 1-4.412-5.11 5.43 5.43 0 0 0 2.168.387A5.416 5.416 0 0 1 2.89 4.498a15.09 15.09 0 0 0 10.913 5.573 5.185 5.185 0 0 1 3.434-6.48 5.18 5.18 0 0 1 5.546 1.682 9.076 9.076 0 0 0 3.33-1.317 5.038 5.038 0 0 1-2.4 2.942 9.068 9.068 0 0 0 3.02-.85 5.05 5.05 0 0 1-2.48 2.71z"/></svg></span>-->
+                                                            <!--<span class="rrssb-text">twitter</span>-->
+                                                            <i class="fa fa-twitter-square fa-3x col-xs-1" style="padding: 0;"></i>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                        <div t-if="page_of_saved" t-att-data-lease_id="account_asset_one_lease.id" t-att-data-page_info="property_type" class="listing-delete" style="cursor:pointer;">
+                            <i class="fa fa-heart fa-lg col-xs-1" style="color: red;" aria-hidden="true"></i>
+                        </div>
+                        <t t-if="not page_of_saved">
+                            <t t-if="account_asset_one_lease.id in product_ids_from_cookies_list">
+                                <div t-att-data-lease_id="account_asset_one_lease.id" class="listing-save" style="display:none;">
+                                    <i class="fa fa-heart-o fa-lg col-xs-1" style="padding: 0;"></i>
+                                </div>
+                                <div t-att-data-lease_id="account_asset_one_lease.id" class="listing-saved-data" style="cursor:pointer">
+                                    <i class="fa fa-heart fa-lg col-xs-1" style="color: red;padding: 0;"></i>
+                                </div>
+                            </t>
+                            <t t-if="not account_asset_one_lease.id in product_ids_from_cookies_list">
+                                <div t-att-data-lease_id="account_asset_one_lease.id" class="listing-save" style="cursor:pointer">
+                                    <i class="fa fa-heart-o fa-lg col-xs-1" style="padding: 0;"></i>
+                                </div>
+                                <div t-att-data-lease_id="account_asset_one_lease.id" class="listing-saved-data" style="display:none;" data-check_value="false">
+                                    <i class="fa fa-heart fa-lg col-xs-1" style="color: red;padding: 0;"></i>
+                                </div>
+                            </t>
+                        </t>
+                        <br />
+                        </div>
+                    </div>
+            </div>
+            <!--<div class="property_name_address">
+            &lt;!&ndash;<div class="col-xs-12">&ndash;&gt;
+                <div t-att-data-lease_id="account_asset_one_lease.id" class="property_name" style="cursor:pointer;">
+                    <t t-esc="account_asset_one_lease.name" />
+                </div>
+                <br />
+                <div class="property_address">
+                    <i class="fa fa-map-marker" aria-hidden="true"></i><![CDATA[&nbsp;]]><div class="property_street_city"><t t-esc="account_asset_one_lease.street" /><t t-esc="account_asset_one_lease.city" /></div></div>
+                <hr style="margin-top:10px;margin-bottom:10px;" />
+                <div class="col-xs-12" style="padding: 0px;">
+                    <div class="col-xs-9" style="color: #222222;font-size: 16px;">
+                        <t t-esc="account_asset_one_lease.total_price" />
+                    </div>
+                    &lt;!&ndash;<div class="social_share_property" style="cursor:pointer">
+                        <i class="fa fa-share-alt fa-lg col-xs-1 col-sm-1 col-md-1 col-lg-1" aria-hidden="true"></i>
+                    </div>&ndash;&gt;
+                    <div class="col-xs-1">
+                        <div class="social_share_property">
+                            <ul class="nav navbar-nav nav-pills col-xs-1" role="tablist" data-dropdown-in="fadeInDown" data-dropdown-out="fadeOutUp">
+                                <li role="presentation" class="dropdown col-xs-1" style="padding: 0;cursor:pointer;">
+                                    <a class="dropdown-toggle col-xs-1" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true" style="padding:0">
+                                        <i class="fa fa-share-alt fa-lg col-xs-1" style="color: #444;padding:0"></i>
+                                    </a>
+                                    <ul class="dropdown-menu" style="padding: 12px;position: inherit;background-color: #FFF;box-shadow: 0px 6px 12px 0px rgba(0, 0, 0, 0.176);z-index: 1;border: 1px solid rgba(0, 0, 0, 0.15);margin-top:5px;">
+                                        <li>
+                                            <div style="cursor:pointer;">
+                                                <ul class="rrssb-buttons clearfix" style="padding: 2%;">
+                                                    <li class="rrssb-facebook col-xs-4">
+                                                        &lt;!&ndash;  Replace with your URL. For best results, make sure you page has the proper FB Open Graph tags in header: https://developers.facebook.com/docs/opengraph/howtos/maximizing-distribution-media-content/ &ndash;&gt;
+                                                        &lt;!&ndash;<a href="https://www.facebook.com/sharer/sharer.php?u=http://kurtnoble.com/labs/rrssb/index.html" class="popup">&ndash;&gt;
+                                                        <a t-attf-href="https://www.facebook.com/sharer/sharer.php?u=http://pmsscs.localtunnel.me/selected_property_page?id=#{account_asset_one_lease.id}" class="popup" style="padding: 0;">
+                                                            &lt;!&ndash;<span class="rrssb-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 29 29"><path d="M26.4 0H2.6C1.714 0 0 1.715 0 2.6v23.8c0 .884 1.715 2.6 2.6 2.6h12.393V17.988h-3.996v-3.98h3.997v-3.062c0-3.746 2.835-5.97 6.177-5.97 1.6 0 2.444.173 2.845.226v3.792H21.18c-1.817 0-2.156.9-2.156 2.168v2.847h5.045l-.66 3.978h-4.386V29H26.4c.884 0 2.6-1.716 2.6-2.6V2.6c0-.885-1.716-2.6-2.6-2.6z"/></svg></span>&ndash;&gt;
+                                                            &lt;!&ndash;<span class="rrssb-text">facebook</span>&ndash;&gt;
+                                                            <i class="fa fa-facebook-square fa-3x col-xs-1" style="padding: 0;"></i>
+                                                        </a>
+                                                    </li>
+                                                    <li class="rrssb-twitter col-xs-4">
+                                                        &lt;!&ndash; Replace href with your Meta and URL information  &ndash;&gt;
+                                                        &lt;!&ndash;<a href="https://twitter.com/intent/tweet?text=Ridiculously%20Responsive%20Social%20Sharing%20Buttons%20by%20%40dbox%20and%20%40joshuatuscan%3A%20http%3A%2F%2Fkurtnoble.com%2Flabs%2Frrssb%20%7C%20http%3A%2F%2Fkurtnoble.com%2Flabs%2Frrssb%2Fmedia%2Frrssb-preview.png"&ndash;&gt;
+                                                        &lt;!&ndash;<a t-attf-href="https://twitter.com/intent/tweet?text=#{account_asset_one_lease.name}%20http%3A%2F%2Fpmsscs.localtunnel.me%2Fselected_property_page?id=#{account_asset_one_lease.id}%20%7C%20http%3A%2F%2Fkurtnoble.com%2Flabs%2Frrssb"&ndash;&gt;
+                                                        <a t-attf-href="https://twitter.com/intent/tweet?text=#{account_asset_one_lease.name}%20http%3A%2F%2Fpmsscs.localtunnel.me%2Fselected_property_page?id=#{account_asset_one_lease.id}%20%7C%20http%3A%2F%2Fpmsscs.localtunnel.me%2Fselected_property_page?id=#{account_asset_one_lease.id}" class="popup" style="padding: 0;">
+                                                            &lt;!&ndash;<span class="rrssb-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 28"><path d="M24.253 8.756C24.69 17.08 18.297 24.182 9.97 24.62a15.093 15.093 0 0 1-8.86-2.32c2.702.18 5.375-.648 7.507-2.32a5.417 5.417 0 0 1-4.49-3.64c.802.13 1.62.077 2.4-.154a5.416 5.416 0 0 1-4.412-5.11 5.43 5.43 0 0 0 2.168.387A5.416 5.416 0 0 1 2.89 4.498a15.09 15.09 0 0 0 10.913 5.573 5.185 5.185 0 0 1 3.434-6.48 5.18 5.18 0 0 1 5.546 1.682 9.076 9.076 0 0 0 3.33-1.317 5.038 5.038 0 0 1-2.4 2.942 9.068 9.068 0 0 0 3.02-.85 5.05 5.05 0 0 1-2.48 2.71z"/></svg></span>&ndash;&gt;
+                                                            &lt;!&ndash;<span class="rrssb-text">twitter</span>&ndash;&gt;
+                                                            <i class="fa fa-twitter-square fa-3x col-xs-1" style="padding: 0;"></i>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div t-if="page_of_saved" t-att-data-lease_id="account_asset_one_lease.id" t-att-data-page_info="property_type" class="listing-delete col-xs-1" style="cursor:pointer;">
+                        <i class="fa fa-heart fa-lg" style="color: red;" aria-hidden="true"></i>
+                    </div>
+                    <t t-if="not page_of_saved">
+                        <t t-if="account_asset_one_lease.id in product_ids_from_cookies_list">
+                            <div t-att-data-lease_id="account_asset_one_lease.id" class="listing-save col-xs-1" style="display:none;">
+                                <i class="fa fa-heart-o fa-lg" style="padding: 0;"></i>
+                            </div>
+                            <div t-att-data-lease_id="account_asset_one_lease.id" class="listing-saved-data col-xs-1" style="cursor:pointer">
+                                <i class="fa fa-heart fa-lg" style="color: red;padding: 0;"></i>
+                            </div>
+                        </t>
+                        <t t-if="not account_asset_one_lease.id in product_ids_from_cookies_list">
+                            <div t-att-data-lease_id="account_asset_one_lease.id" class="listing-save col-xs-1" style="cursor:pointer">
+                                <i class="fa fa-heart-o fa-lg" style="padding: 0;"></i>
+                            </div>
+                            <div t-att-data-lease_id="account_asset_one_lease.id" class="listing-saved-data col-xs-1" style="display:none;" data-check_value="false">
+                                <i class="fa fa-heart fa-lg" style="color: red;padding: 0;"></i>
+                            </div>
+                        </t>
+                    </t>
+                </div>
+                <br/>
+            </div>-->
+        </template>
+        <template id="dosplay_properties">
+            <div class="col-xs-12 col-sm-6 col-md-4 mb16 property-images">
+                <t t-call="property_management_website.display_property_content" />
+            </div>
+        </template>
+        <template id="search_property_content">
+            <!--<script>
+                $('.dropdown').on('show.bs.dropdown', function(e){
+                  $(this).find('.dropdown-menu').first().stop(true, true).slideDown();
+                });
+                $('.dropdown').on('hide.bs.dropdown', function(e){
+                  $(this).find('.dropdown-menu').first().stop(true, true).slideUp();
+                });
+            </script>-->
+            <input type="hidden" id="property_type" name="property_type" t-att-value="property_type" />
+            <div class="col-xs-4 col-sm-3 col-lg-2 pull-right">
+                <ul class="nav navbar-nav nav-pills" role="tablist" data-dropdown-in="fadeInDown" data-dropdown-out="fadeOutUp">
+                    <li role="presentation" class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true">Advance Filter<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <div class="row" style="cursor:pointer;">
+                                    <div class="col-xs-12">
+                                        <ul class="nav navbar-nav nav-pills" role="tablist" data-dropdown-in="fadeInDown" data-dropdown-out="fadeOutUp" style="height:inherit;width: 100%;border-radius: 0px;">
+                                            <li class="dropdown-submenu" style="width: inherit;">
+                                                <a>
+                                                    <!--<span class="caret"></span><![CDATA[&nbsp;]]><![CDATA[&nbsp;]]><![CDATA[&nbsp;]]>-->
+                                                    <i class="fa fa-caret-down" style="width:14px;float:left;margin-top: 3px;"></i>
+                                                    <i class="fa fa-caret-left" style="display:none;"></i>
+                                                    <p style="float:left">Property Type</p>
+                                                    <!--Property Type-->
+                                                    <!-- <span class="caret" style="float:right;margin-top: 7px;"></span>-->
+                                                </a>
+                                                <ul class="dropdown-menu">
+                                                    <li>
+                                                        <div class="row" style="margin-right: 0px;">
+                                                            <t t-foreach="property_types" t-as="one_property_type">
+                                                                <!--<t t-if="property_type_display  &lt; 5">-->
+                                                                <div class="col-xs-12">
+                                                                    <div class="checkbox">
+                                                                        <label>
+                                                                            <t t-if="one_property_type.id in total_selected_property_type_ids">
+                                                                                <input type="checkbox" id="check_property" t-att-data-property_type_id="one_property_type.id" checked="checked" />
+                                                                            </t>
+                                                                            <t t-if="one_property_type.id not in total_selected_property_type_ids">
+                                                                                <input type="checkbox" id="check_property" t-att-data-property_type_id="one_property_type.id" />
+                                                                            </t>
+                                                                            <t t-esc="one_property_type.name" />
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                            </t>
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h5>Bedrooms</h5>
+                                    <p style="text-align:center;">
+                                        <input type="text" class="dropdown_filter_change text-center" id="bead_amount" name="bead_amount" readonly="true" style="border:0; color:#c0392b; font-weight:bold; background-color: #d2d2d2;" />
+                                    </p>
+                                </div>
+                                <div class="row mb4">
+                                    <div class="col-xs-6">Min
+                                    <input type="hidden" class="dropdown_filter_change" t-att-value="min_bead" name="min_bead" id="min_bead_range_id" /></div>
+                                    <div class="col-xs-6 pull-right" style="text-align:right;">Max
+                                    <input type="hidden" class="dropdown_filter_change" t-att-value="max_bead" name="max_bead" id="max_bead_range_id" /></div>
+                                </div>
+                                <div class="form-group price-slider">
+                                    <div id="bead_slider_range" class="col-xs-11"></div>
+                                </div>
+                                <br />
+                                <div>
+                                    <h5>Bathroom</h5>
+                                    <p style="text-align:center;">
+                                        <input type="text" class="dropdown_filter_change text-center" id="bath_amount" name="bath_amount" readonly="true" style="border:0; color:#c0392b; font-weight:bold; background-color: #d2d2d2;" />
+                                    </p>
+                                </div>
+                                <div class="row mb4">
+                                    <div class="col-xs-6">Min
+                                    <input type="hidden" class="dropdown_filter_change" t-att-value="min_bath" name="min_bath" id="min_bath_range_id" /></div>
+                                    <div class="col-xs-6 pull-right" style="text-align:right;">Max
+                                    <input type="hidden" class="dropdown_filter_change" t-att-value="max_bath" name="max_bath" id="max_bath_range_id" /></div>
+                                </div>
+                                <div class="form-group price-slider">
+                                    <div id="bath_slider_range" class="col-xs-11"></div>
+                                </div>
+                                <div class="mt32">
+                                    <h5>Type of Property</h5>
+                                    <select form="property_list_display" t-att-value="dropdown_price" name="dropdown_price" class="dropdown_filter_change form-control">
+                                        <option value="all" t-att-selected="dropdown_price == &quot;all&quot;">ALL</option>
+                                        <option value="lowest" t-att-selected="dropdown_price == &quot;lowest&quot;">Price (lowest first)</option>
+                                        <option value="highest" t-att-selected="dropdown_price == &quot;highest&quot;">Price (highest first)</option>
+                                        <option value="newest" t-att-selected="dropdown_price == &quot;newest&quot;">Newest first</option>
+                                    </select>
+                                    <h5>Furnish</h5>
+                                    <select name="dropdown_furnish" t-att-value="dropdown_furnish" class="dropdown_filter_change form-control" id="inputFurnished">
+                                        <option value="all" t-att-selected="dropdown_furnish == &quot;all&quot;">ALL</option>
+                                        <option value="full_furnished" t-att-selected="dropdown_furnish == &quot;full_furnished&quot;">Furnished</option>
+                                        <option value="semi_furnished" t-att-selected="dropdown_furnish == &quot;semi_furnished&quot;">Semi Furnished</option>
+                                        <option value="none" t-att-selected="dropdown_furnish == &quot;none&quot;">Unfurnished</option>
+                                    </select>
+                                    <h5>Facing</h5>
+                                    <select name="dropdown_facing" t-att-value="dropdown_facing" class="dropdown_filter_change form-control" id="inputFacing">
+                                        <option value="all" t-att-selected="dropdown_facing == &quot;all&quot;">ALL</option>
+                                        <option value="east" t-att-selected="dropdown_facing == &quot;east&quot;">East</option>
+                                        <option value="west" t-att-selected="dropdown_facing == &quot;west&quot;">West</option>
+                                        <option value="north" t-att-selected="dropdown_facing == &quot;north&quot;">North</option>
+                                        <option value="south" t-att-selected="dropdown_facing == &quot;south&quot;">South</option>
+                                    </select>
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-xs-4 col-sm-3 col-lg-2 pull-right">
+                <ul class="nav navbar-nav nav-pills" role="tablist" data-dropdown-in="fadeInDown" data-dropdown-out="fadeOutUp">
+                    <li role="presentation" class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true">Price Filter<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <div>
+                                    <div>
+                                        <h5>Price</h5>
+                                        <p style="text-align:center;">
+                                            <input type="text" class="dropdown_filter_change text-center" id="price_slider" style="border:0; color:#c0392b; font-weight:bold; background-color: #d2d2d2;" />
+                                        </p>
+                                    </div>
+                                    <div class="row mb4">
+                                        <div class="col-xs-6">Min
+                                    <input type="hidden" class="dropdown_filter_change" t-att-value="min_range" name="min_range" id="min_price_range_id" /></div>
+                                        <div class="col-xs-6 pull-right" style="text-align:right;">Max
+                                    <input type="hidden" class="dropdown_filter_change" t-att-value="max_range" name="max_range" id="max_price_range_id" /></div>
+                                    </div>
+                                    <div class="form-group price-slider">
+                                        <div id="price_slider_range" class="col-xs-11"></div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-xs-4 col-sm-3 col-lg-2 pull-right">
+                <ul class="nav navbar-nav nav-pills" role="tablist" data-dropdown-in="fadeInDown" data-dropdown-out="fadeOutUp">
+                    <li role="presentation" class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true">Location Filter<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <h5>Post Code</h5>
+                            <li class="mb4">
+                                <input type="text" class="form-control" t-att-value="postcode" id="postcode" name="postcode" placeholder="Post Code" />
+                            </li>
+                            <h5>Area</h5>
+                            <li class="mb4">
+                                <input type="text" class="form-control" t-att-value="area" id="area" name="area" placeholder="Area" />
+                            </li>
+                            <h5>City</h5>
+                            <li class="mb4">
+                                <input type="text" class="form-control" t-att-value="city" id="city" name="city" placeholder="City" />
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </template>
+        <template name="All Aseets Sale" id="allassetsale_content">
+            <div class="rest feature-properties">
+                <section class="recent-viewed-section section" id="allassetsale_section">
+                    <!--<script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
+                        <script type="text/javascript" src="http://twitter.github.com/bootstrap/assets/js/bootstrap-dropdown.js"></script>-->
+                    <div class="container">
+                        <div class="row allassetsale_section_first_row" style="position: fixed;width: inherit;z-index: 1;background: #f5f1ed;">
+                            <div class="col-md-3" id="display_saved_properties">
+                                <input type="hidden" id="property_type" name="property_type" t-att-value="property_type" />
+                                <ul class="nav navbar-nav">
+                                    <li style="cursor:pointer">
+                                        <a id="view_all_asset_sale" class="active">Sales</a>
+                                    </li>
+                                    <li style="cursor:pointer">
+                                        <a id="view_all_asset_sale_saved"></a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <t t-call="property_management_website.search_property_content" />
+                        </div>
+                        <div class="row recent-viewed-header text-center">
+                            <div class="col-md-12 mb16">
+                                <h3>FEATURED SALES</h3>
+                            </div>
+                        </div>
+                        <t t-if="pager">
+                            <div class="row">
+                                <t t-call="property_management_website.view_pagination" />
+                            </div>
+                        </t>
+                        <t t-call="property_management_website.featured_sales_content" />
+                    </div>
+                </section>
+                <t t-call="property_management_website.custom_footer" />
+            </div>
+        </template>
+        <template id="featured_sales_content" name="Featured Sales Content">
+            <div class="row recent-viewed-content">
+                <t t-foreach="all_property_objs" t-as="account_asset_one_lease">
+                    <t t-if="(account_asset_one_lease.state == 'close')">
+                        <t t-call="property_management_website.dosplay_properties" />
+                    </t>
+                </t>
+            </div>
+        </template>
+        <template id="past_sales">
+            <t t-set="one_time_past_sale_display" t-value="1"/>
+                <section class="featured-past-sell-section section">
+                    <div class="container">
+                        <t t-foreach="all_property_objs" t-as="account_asset_one_lease">
+                            <t t-if="(account_asset_one_lease.state == 'sold')">
+                                <t t-if="one_time_past_sale_display == 1">
+                                    <div class="row recent-viewed-header text-center">
+                                        <div class="col-md-12 mb16">
+                                            <h3>FEATURED PAST SALES</h3>
+                                        </div>
+                                        <a class="button responsive-width mb16" id="view_all_past_sales" style="cursor:pointer;">View all Past Sales</a>
+                                    </div>
+                                    <t t-set="one_time_past_sale_display" t-value="one_time_past_sale_display + 1"/>
+                                </t>
+                                <t t-call="property_management_website.dosplay_properties" />
+                            </t>
+                        </t>
+                    </div>
+                </section>
+        </template>
+        <template id="featured_past_sale_content" name="Featured Past Sales Content">
+            <t t-foreach="all_property_objs" t-as="account_asset_one_lease">
+                <t t-if="(account_asset_one_lease.state == 'sold')">
+                    <t t-call="property_management_website.dosplay_properties" />
+                </t>
+            </t>
+        </template>
+        <template id="selected_property_onload" name="Property">
+            <t t-call="website.layout">
+                <t t-call="property_management_website.selected_property" />
+            </t>
+        </template>
+        <template id="selected_property" name="selected Property">
+            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true"><![CDATA[&times;]]></span>
+                            </button>
+                            <h4 class="modal-title" id="exampleModalLabel">Request to Book</h4>
+                        </div>
+                        <div class="row">
+                            <div class="modal-body col-xs-12" style="margin-bottom: -20px;">
+                                <form id="selectedpropertyForm" data-toggle="validator">
+                                    <div class="form-group col-xs-12 col-sm-6">
+                                        <label class="control-label" for="first_name">First Name</label>
+                                        <input type="text" class="form-control" name="first_name" required="True" />
+                                    </div>
+                                    <div class="form-group col-xs-12 col-sm-6">
+                                        <label class="control-label" for="last_name">Last Name</label>
+                                        <input type="text" class="form-control" name="last_name" required="True" />
+                                    </div>
+                                    <div class="form-group col-xs-12 col-sm-6">
+                                        <label class="control-label" for="phone">Telephone number</label>
+                                        <input type="tel" class="form-control" name="phone" required="True" />
+                                    </div>
+                                    <div class="form-group col-xs-12 col-sm-6">
+                                        <label class="control-label" for="inputTelType">Phone type</label>
+                                        <select id="inputTelType" name="telType" class="form-control" required="True">
+                                            <option value="mob">Mobile</option>
+                                            <option value="work">Work</option>
+                                            <option value="home">Home</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-xs-12 col-sm-6">
+                                        <label class="control-label" for="email_from">Email address </label>
+                                        <input type="email" class="form-control" name="email_from" data-error="Please enter valid Email address." required="True" />
+                                        <div class="help-block with-errors"></div>
+                                    </div>
+                                    <div class="form-group col-xs-12 col-sm-6">
+                                        <label class="control-label" for="inputTelTime">When to call?</label>
+                                        <select id="inputTelTime" name="telTime" class="form-control" required="True">
+                                            <option value="anytime">Anytime</option>
+                                            <option value="morning">Morning</option>
+                                            <option value="afternoon">Afternoon</option>
+                                            <option value="evening">Evening</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-xs-12">
+                                        <label class="control-label" for="inputMsg">Message for estate agent</label>
+                                        <textarea id="inputMsg" name="msg" placeholder="Message for estate agent" rows="3" class="form-control" required="True"></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="hidden" t-att-value="account_asset_property_obj.id" name="asset" id="asset_id"></input>
+                                    </div>
+                                    <div class="col-xs-12">
+                                        <div id="display_success_msg" class="form-group alert alert-success " style="display:none;">
+                                     Your message has been sent successfully.
+    <!--		                        <button type="button" class="close" data-dismiss="alert">&amp;times;</button--></div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" id="send_property_id">Subscribe Me</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="rest feature-properties">
+                <section class="recent-viewed-section section">
+                    <div class="container">
+                        <div class="row recent-viewed-header text-center">
+                            <div class="col-md-12">
+                                <h3>PROPERTY DETAIL</h3>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <t t-if="account_asset_property_obj">
+                    <section>
+                        <div class="container mt16">
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <ul class="nav nav-tabs" id="myTab">
+                                        <li class="active">
+                                            <a data-target="#general" data-toggle="tab">General Information</a>
+                                        </li>
+                                        <li>
+                                            <a data-target="#utility" data-toggle="tab">Utility &amp; Safety</a>
+                                        </li>
+                                        <li>
+                                            <a data-target="#amenities" data-toggle="tab">Amenities</a>
+                                        </li>
+                                        <li> 
+                                               <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD2va8jyh7yRcBzKBJ1-y6wliwb6MeyXA8&amp;libraries=places"/>
+                                            <a data-target="#map" data-toggle="tab" onClick="showMap();">Map</a>
+                                        </li>
+                                        <li t-if="my_propery">
+                                            <a data-target="#maintenance" data-toggle="tab">Maintenance</a>
+                                        </li>
+                                        <li t-if="selected_tenant">
+                                            <a data-target="#payment" data-toggle="tab">Payment</a>
+                                        </li>
+                                    </ul>
+                                    <div class="tab-content">
+                                        <div class="tab-pane active" id="general">
+                                            <div t-att-data-lease_id="account_asset_property_obj.id" class="property_name_selected_property col-xs-12 mt32">
+                                                <t t-esc="account_asset_property_obj.name" />
+                                            </div>
+                                            <div id="pro_street" t-att-data-street="account_asset_property_obj.street" class="col-xs-12">
+                                                <t t-esc="account_asset_property_obj.street" />
+                                            </div>
+                                            <div id="pro_street2" t-att-data-street2="account_asset_property_obj.street2" class="col-xs-12">
+                                                <t t-esc="account_asset_property_obj.street2" />
+                                            </div>
+                                            <div id="pro_city" t-att-data-city="account_asset_property_obj.city" class="col-xs-12">
+                                                <t t-esc="account_asset_property_obj.city" />
+                                            </div>
+                                            <div id="pro_state" t-att-data-state="account_asset_property_obj.state_id.name" class="col-xs-12">
+                                                <t t-esc="account_asset_property_obj.state_id.name" />
+                                            </div>
+                                            <div id="pro_country" t-att-data-country="account_asset_property_obj.country_id.name" class="col-xs-12">
+                                                <t t-esc="account_asset_property_obj.country_id.name" />
+                                            </div>
+                                            <div id="pro_zip" t-att-data-zip="account_asset_property_obj.zip" class="col-xs-12">
+                                                <t t-esc="account_asset_property_obj.zip" />
+                                            </div>
+                                            <br />
+                                            <div class="col-xs-12">
+                                                <t t-if="account_asset_property_obj.state == 'close'">
+                                                    <span class="sale-tag font-montserrat sale">FOR SALE</span>
+                                                </t>
+                                                <t t-if="account_asset_property_obj.state == 'draft'">
+                                                    <span class="sale-tag font-montserrat sale">FOR LEASE</span>
+                                                </t>
+                                                <span class="sale-tag price font-montserrat">
+                                                    <t t-esc="'{0:,.2f}'.format(float(account_asset_property_obj.total_price))" />
+                                                </span>
+                                                <button type="button" t-if="not already_booked" class="btn btn-primary sale-tag font-montserrat request" data-toggle="modal" data-target="#exampleModal">Request to Book</button>
+                                                <t t-if="already_booked">
+                                                    <t t-if="not my_propery">
+                                                        <span class="sale-tag font-montserrat">
+                                                            <t t-esc="already_booked" />
+                                                        </span>
+                                                    </t>
+                                                </t>
+                                            </div>
+                                            <br />
+                                            <div class="col-xs-12" style="color: #777777;">
+                                                <t t-esc="account_asset_property_obj.note" />
+                                            </div>
+                                            <hr />
+                                            <div class="col-xs-12 info-property more">
+                                                <h5 class="tittle-head"> Basic Property Details</h5>
+                                                <div class="inner">
+                                                    <div class="col-md-4 col-sm-6">
+                                                        <i class="fa fa-home" aria-hidden="true"></i>
+                                                        <t t-esc="account_asset_property_obj.name" />
+                                                    </div>
+                                                    <div class="col-md-4 col-sm-6">
+                                                        <i class="fa fa-tags"></i> Type:
+                                                        <t t-esc="account_asset_property_obj.type_id.name" />
+                                                    </div>
+                                                    <div class="col-md-4 col-sm-6">
+                                                        <i class="fa fa-building"></i> No of Towers:
+                                                        <t t-esc="account_asset_property_obj.no_of_towers" />
+                                                    </div>
+                                                    <div class="col-md-4 col-sm-6">
+                                                        <i class="fa fa-retweet"></i> Built-Up Area:
+                                                        <t t-esc="'{0:,.2f}'.format(float(account_asset_property_obj.gfa_feet))" /><![CDATA[&nbsp;]]>Sqft
+                                                    </div>
+                                                    <div class="col-md-4 col-sm-6">
+                                                        <i class="fa fa-bars"></i> Floor:
+                                                        <t t-esc="account_asset_property_obj.floor" />
+                                                    </div>
+                                                    <div class="col-md-4 col-sm-6">
+                                                        <i class="fa fa-eraser"></i> Bathroom:
+                                                        <t t-esc="account_asset_property_obj.bathroom" />
+                                                    </div>
+                                                    <div class="col-md-4 col-sm-6">
+                                                        <i class="fa fa-book"></i> Bedrooms:
+                                                        <t t-esc="account_asset_property_obj.bedroom" />
+                                                    </div>
+                                                    <div class="col-md-4 col-sm-6">
+                                                        <i class="fa fa-delicious"></i> Furnishing:
+                                                        <t t-if="account_asset_property_obj.furnished == &quot;semi_furnished&quot;">Semi Furnished</t>
+                                                        <t t-if="account_asset_property_obj.furnished == &quot;full_furnished&quot;">Full Furnished</t>
+                                                        <t t-if="account_asset_property_obj.furnished == &quot;none&quot;">None</t>
+                                                    </div>
+                                                    <div class="col-md-4 col-sm-6">
+                                                        <i class="fa fa-ge"></i> Facing:
+                                                        <t t-esc="account_asset_property_obj.facing" />
+                                                    </div>
+                                                    <div class="col-md-4 col-sm-6">
+                                                        <i class="fa fa-calendar-o"></i> Age of Property:
+                                                        <t t-esc="account_asset_property_obj.age_of_property" />
+                                                    </div>
+                                                    <div class="col-md-4 col-sm-6">
+                                                        <i class="fa fa-plus-circle"></i> Added:
+                                                        <t t-esc="account_asset_property_obj.create_date" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane" id="utility">
+                                            <!--<t t-foreach="account_asset_property_obj.utility_ids" t-as="one_property_utility_id">
+                                                <i class="fa fa-home" aria-hidden="true"></i><t t-esc="one_property_utility_id.utility_id.name"/><br/>
+                                            </t>-->
+                                            <div class="list-group mt32">
+                                                <a class="list-group-item col-xs-4">
+                                                    <i class="fa fa-television" aria-hidden="true"><![CDATA[&nbsp;]]> TV</i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane" id="amenities">
+                                            <div class="list-group mt32">
+                                                <!--<a class="list-group-item col-xs-4 col-sm-4 col-md-4 col-lg-4"><i class="fa fa-cutlery" aria-hidden="true"><![CDATA[&nbsp;]]> Cafe</i></a>
+                                              <a class="list-group-item col-xs-4 col-sm-4 col-md-4 col-lg-4"><i class="fa fa-birthday-cake" aria-hidden="true"><![CDATA[&nbsp;]]> Birthday</i></a>
+                                              <a class="list-group-item col-xs-4 col-sm-4 col-md-4 col-lg-4"><i class="fa fa-wheelchair" aria-hidden="true"><![CDATA[&nbsp;]]> Wheelchair</i></a>
+                                              <a class="list-group-item col-xs-4 col-sm-4 col-md-4 col-lg-4"><i class="fa fa-taxi" aria-hidden="true"><![CDATA[&nbsp;]]> Cab</i></a>
+                                              <a class="list-group-item col-xs-4 col-sm-4 col-md-4 col-lg-4"><i class="fa fa-bus" aria-hidden="true"><![CDATA[&nbsp;]]> Bus stand</i></a>-->
+                                                <div class="col-md-12">
+                                                    <t t-foreach="account_asset_property_obj.utility_ids" t-as="u">
+                                                        <div class="col-md-4">
+                                                            <i class="fa fa-angle-double-right"></i>
+                                                            <t t-esc="u.utility_id.name" />
+                                                            <br />
+                                                        </div>
+                                                    </t>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane" id="map">
+                                        
+                                            <div class="mt32">
+                                                <div class="col-md-12">
+                                                    <div id="MAP" style="width: 100%;height:500px;"></div>
+                                                </div>
+                                                <div class="col-md-12">
+                                                <!--<div class="hidden col-md-12">-->
+                                                    <div class="row">
+                                                        <div class="col-xs-12">
+                                                            <h3>Please select the Nearby Places</h3>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-xs-12">
+                                                            <table class="table" border="0" cellspacing="0" cellpadding="3" id="table-map-near-by">
+                                                                <tr>
+                                                                    <td style="border:none">
+                                                                        <input type="checkbox" name="mytype" class="chkbox" id="school" value="school" />
+                                                                        <label for="school">School</label>
+                                                                    </td>
+                                                                    <td style="border:none">
+                                                                        <input type="checkbox" name="mytype" class="chkbox" id="petrol_pump" value="petrol_pump" />
+                                                                        <label for="petrol_pump">Petrol Pump</label>
+                                                                    </td>
+                                                                    <td style="border:none">
+                                                                        <input type="checkbox" name="mytype" class="chkbox" id="hospital" value="hospital" />
+                                                                        <label for="hospital">Hospital</label>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="border:none">
+                                                                        <input type="checkbox" name="mytype" class="chkbox" id="bus_station" value="bus_station" />
+                                                                        <label for="bus_station">Bus Stop</label>
+                                                                    </td>
+                                                                    <td style="border:none">
+                                                                        <input type="checkbox" name="mytype" class="chkbox" id="park" value="park" />
+                                                                        <label for="park">Park</label>
+                                                                    </td>
+                                                                    <td style="border:none">
+                                                                        <input type="checkbox" name="mytype" class="chkbox" id="bank" value="bank" />
+                                                                        <label for="bank">Bank</label>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="border:none">
+                                                                        <input type="checkbox" name="mytype" class="chkbox" id="bar" value="bar" />
+                                                                        <label for="bar">Bar</label>
+                                                                    </td>
+                                                                    <td style="border:none">
+                                                                        <input type="checkbox" name="mytype" class="chkbox" id="movie_theater" value="movie_theater" />
+                                                                        <label for="movie_theater">Movie Theater</label>
+                                                                    </td>
+                                                                    <td style="border:none">
+                                                                        <input type="checkbox" name="mytype" class="chkbox" id="night_club" value="night_club" />
+                                                                        <label for="night_club">Night Club</label>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="border:none">
+                                                                        <input type="checkbox" name="mytype" class="chkbox" id="zoo" value="zoo" />
+                                                                        <label for="zoo">Zoo</label>
+                                                                        <br />
+                                                                    </td>
+                                                                    <td style="border:none">
+                                                                        <input type="checkbox" name="mytype" class="chkbox" id="gym" value="gym" />
+                                                                        <label for="gym">Gym</label>
+                                                                    </td>
+                                                                    <td style="border:none">
+                                                                        <input type="checkbox" name="mytype" class="chkbox" id="atm" value="atm" />
+                                                                        <label for="atm">ATM</label>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="border:none">
+                                                                        <input type="checkbox" name="mytype" class="chkbox" id="spa" value="spa" />
+                                                                        <label for="spa">Spa</label>
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                             <!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCoaH60G3ijIxlPMEHdmPVqTfUgMCprpLo"></script> -->
+                                        </div>
+                                        <div class="tab-pane" id="maintenance">
+                                            <div class="mt32">
+                                                <form id="MaintanancepropertyForm" t-att-data-property_id="account_asset_property_obj.id" data-toggle="validator">
+                                                    <div class="form-group col-xs-12">
+                                                        <div class="col-md-4">
+                                                            <label class="control-label" for="inputTelType">Maintenance type</label>
+                                                        </div>
+                                                        <div class="col-md-8">
+                                                            <select id="inputTelType" name="telType" class="form-control" required="True">
+                                                                <option></option>
+                                                                <t t-if="maintenance_types">
+                                                                    <t t-foreach="maintenance_types" t-as="one_maintenance_types">
+                                                                        <option class="maintenane_type_class" t-att-data-type_id="one_maintenance_types.id">
+                                                                            <t t-esc="one_maintenance_types.name" />
+                                                                        </option>
+                                                                    </t>
+                                                                </t>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group col-xs-12">
+                                                        <div class="col-md-4">
+                                                            <label class="control-label" for="inputTelType">Date</label>
+                                                        </div>
+                                                        <div class="col-md-8">
+                                                            <div class="form-group">
+                                                                <div class="input-group date" id="datetimepicker8">
+                                                                    <input type="text" class="form-control date_maintenance" required="True" />
+                                                                    <span class="input-group-addon">
+                                                                        <span class="fa fa-calendar"></span>
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group col-xs-12">
+                                                        <div class="col-md-4">
+                                                            <label class="control-label" for="inputRentersFault">Renters Fault</label>
+                                                        </div>
+                                                        <div class="col-md-8">
+                                                            <input type="checkbox" id="renters_fault" name="Renters Fault" value="renters_fault"/>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group col-xs-12">
+                                                        <div class="col-md-4">
+                                                            <label class="control-label" for="inputMsg">Description</label>
+                                                        </div>
+                                                        <div class="col-md-8">
+                                                            <textarea id="inputMsg" name="msg" placeholder="Enter maintenance detail" rows="3" class="form-control" required="True"></textarea>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group col-xs-12">
+                                                        <div class="col-md-4"></div>
+                                                        <div class="col-md-8">
+                                                            <div id="display_success_msg" class="form-group alert alert-success" style="display:none;">
+                                                                Your message has been sent successfully.
+                            <!--		                        <button type="button" class="close" data-dismiss="alert">&amp;times;</button--></div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group col-xs-12">
+                                                        <div class="col-md-4"></div>
+                                                        <div class="col-md-8">
+                                                            <button type="button" class="btn btn-primary btn-lg" id="submit_maintanance">Submit</button>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane" id="payment">
+                                            <div class="mt32">
+                                                <table id="tanent_payments" class="table table-bordered table-striped">
+                                                    <thead>
+                                                      <tr>
+                                                        <th>Date</th>
+                                                        <th>Amount</th>
+                                                        <th>Penalty</th>
+                                                        <th>Payment</th>
+                                                      </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <t t-if="selected_tenant">
+                                                            <t t-if="selected_tenant.rent_schedule_ids">
+                                                                <t t-foreach='selected_tenant.rent_schedule_ids' t-as='payment_id'>
+                                                                    <tr t-if="not payment_id.paid">
+                                                                        <td>
+                                                                            <span t-field="payment_id.start_date" t-field-options='{"format": "MM/dd/yyyy"}'/>
+                                                                        </td>
+                                                                        <td>
+                                                                            <t t-esc="payment_id.amount" />
+                                                                        </td>
+                                                                        <td>
+                                                                            <t t-esc="payment_id.penalty_amount" />
+                                                                        </td>
+                                                                        <td>
+                                                                            <form t-att-action="tx_url" method="post" target="_self">
+                                                                                <input type="hidden" name="cmd" t-att-value="cmd"/>
+                                                                                <input type="hidden" name="business" t-att-value="business"/>
+                                                                                <input type="hidden" name="item_name" t-att-value="item_name"/>
+                                                                                <!--<input type="hidden" name="item_number" t-att-value="account_asset_property_obj.name"/>-->
+                                                                                <input type="hidden" name="item_number" t-att-value="account_asset_property_obj.name"/>
+                                                                                <input type="hidden" name="amount" t-att-value="payment_id.amount + payment_id.penalty_amount"/>
+                                                                                <input type="hidden" name="currency_code" t-att-value="website.company_id.currency_id.name"/>
+                                                                                <!-- partner / address data -->
+                                                                                <input type="hidden" name="address1" t-att-value="partner.street"/>
+                                                                                <input type="hidden" name="city" t-att-value="partner.city"/>
+                                                                                <input type="hidden" name="country" t-att-value="partner.country_id.name"/>
+                                                                                <input type="hidden" name="email" t-att-value="partner.email"/>
+                                                                                <input type="hidden" name="first_name" t-att-value="partner.name"/>
+                                                                                <!--<input type="hidden" name="last_name" t-att-value="partner.last_name"/>-->
+                                                                                <input type="hidden" name="zip" t-att-value="partner.zip"/>
+                                                                                <!-- after payment parameters -->
+                                                                                <!--<input t-if='tx_values.get("custom")' type='hidden' name="custom"
+                                                                                    t-att-value='tx_values.get("custom")'/>-->
+                                                                                <!-- URLs -->
+                                                                                <input type='hidden' name='return' t-att-value="return_url"/>
+                                                                                <input type='hidden' name='notify_url' t-att-value="notify_url"/>
+                                                                                <input type="hidden" name="cancel_return" t-att-value="cancel_return"/>
+                                                                                <input type="hidden" name="invoice" t-att-value="{'partner_id': partner.id, 'property_id': account_asset_property_obj.id, 'payment_id': payment_id.id}"/>
+                                                                                <!--<input type="hidden" name="custom" t-att-value="{'partner_id': partner.id, 'property_id': account_asset_property_obj.id, 'payment_id': payment_id.id}"/>-->
+                                                                                <button type="submit" style="width:100px" t-att-class="submit_class">
+                                                                                    <img src="/property_management_website/static/src/img/paypal-icon.png" class="img-responsive" />
+                                                                                </button>
+                                                                            </form>
+                                                                        </td>
+                                                                    </tr>
+                                                                </t>
+                                                            </t>
+                                                        </t>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-xs-12 property-page-contact"></div>
+                            </div>
+                        </div>
+                    </section>
+                    <hr />
+                    <t t-if="account_asset_property_obj.property_photo_ids">
+                        <section class="recent-viewed-section section">
+                            <div class="container">
+                                <div class="row recent-viewed-header text-center">
+                                    <div class="col-md-12">
+                                        <h3>PROPERTY PHOTOS</h3>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                        <section class="recent-viewed-section section">
+                            <div class="container">
+                                <div class="row recent-viewed-header text-center">
+                                    <div class="col-md-12 col-sm-12 col-xs-12">
+                                        <div id="myCarousel" class="carousel slide mt32" data-ride="carousel">
+                                            <!--<ol class="carousel-indicators">
+                                                <t t-set="image_display" t-value="0" />
+                                                <t t-foreach="account_asset_property_obj.property_photo_ids" t-as="one_property_photo_id">
+                                                    <t t-if="image_display == 0">
+                                                        <li data-target="#myCarousel" data-slide-to="0" class="active">
+                                                            <img class='img-responsive img_selected_property_small' t-att-value="one_property_photo_id.photos" t-att-src="website.image_url(one_property_photo_id, 'photos')"/>
+                                                        </li>
+                                                    </t>
+                                                    <t t-if="image_display != 0">
+                                                        <li data-target="#myCarousel" t-att-data-slide-to="image_display">
+                                                            <img class='img-responsive img_selected_property_small' t-att-value="one_property_photo_id.photos" t-att-src="website.image_url(one_property_photo_id, 'photos')"/>
+                                                        </li>
+                                                    </t>
+                                                    <t t-set="image_display" t-value="image_display+1" />
+                                                </t>
+                                            </ol>-->
+                                            <div class="carousel-inner" role="listbox">
+                                                <t t-set="image_display" t-value="0" />
+                                                <t t-foreach="account_asset_property_obj.property_photo_ids" t-as="one_property_photo_id">
+                                                    <t t-if="image_display == 0">
+                                                        <div class="item active col-md-12 col-sm-12 col-xs-12">
+                                                            <img class="img-responsive img_selected_property" alt="one_property_photo_id.photos_description" t-att-value="one_property_photo_id.photos" t-att-src="website.image_url(one_property_photo_id, 'photos')" />
+                                                            <i><h3><t t-esc="one_property_photo_id.photos_description" /></h3></i>
+                                                        </div>
+                                                        <!--<div class="carousel-caption">
+                                                          <h3><t t-esc="one_property_photo_id.photos_description"/></h3>
+                                                        </div>-->
+                                                    </t>
+                                                    <t t-if="image_display != 0">
+                                                        <div class="item col-md-12 col-sm-12 col-xs-12">
+                                                            <img class="img-responsive img_selected_property" alt="one_property_photo_id.photos_description" t-att-value="one_property_photo_id.photos" t-att-src="website.image_url(one_property_photo_id, 'photos')" />
+                                                            <i><h3><t t-esc="one_property_photo_id.photos_description" /></h3></i>
+                                                        </div>
+                                                        <!--<div class="carousel-caption">
+                                                          <h3><t t-esc="one_property_photo_id.photos_description"/></h3>
+                                                        </div>-->
+                                                    </t>
+                                                    <t t-set="image_display" t-value="image_display+1" />
+                                                </t>
+                                            </div>
+                                            <!-- Left and right controls -->
+                                            <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
+                                                <span class="fa fa-chevron-left" aria-hidden="true"></span>
+                                                <span class="sr-only">Previous</span>
+                                            </a>
+                                            <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
+                                                <span class="fa fa-chevron-right" aria-hidden="true"></span>
+                                                <span class="sr-only">Next</span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                        <hr />
+                    </t>
+                    <t t-if="account_asset_property_obj.video_url">
+                        <section class="recent-viewed-section section">
+                            <div class="container">
+                                <div class="row recent-viewed-header text-center">
+                                    <div class="col-md-12">
+                                        <h3>PROPERTY VIDEO</h3>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                        <section class="recent-viewed-section section">
+                            <div class="container">
+                                <div class="row recent-viewed-header text-center">
+                                    <div class="col-md-12 col-sm-12 col-xs-12">
+                                        <div class="col-md-12 col-sm-12 col-xs-12">
+                                            <div class="embed-responsive embed-responsive-16by9 mt32" style="box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+                                                <iframe class="embed-responsive-item" t-att-src = "account_asset_property_obj.video_url" frameborder="0"></iframe>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                        <hr />
+                    </t>
+                    <t t-if="suggeste_properties_obj">
+                        <section class="recent-viewed-section section">
+                            <div class="selected_property container">
+                                <div class="row recent-viewed-header text-center">
+                                    <div class="col-md-12 mb16">
+                                        <h3>SUGGESTED PROPERTIES</h3>
+                                    </div>
+                                </div>
+                                <div class="row recent-viewed-content">
+                                    <div class="flexslider" style="background: #f5f1ed;">
+                                        <ul class="slides">
+                                            <t t-foreach="suggeste_properties_obj" t-as="account_asset_one_lease">
+                                                <li class="col-xs-12 col-sm-6 col-md-4">
+                                                    <div class="col-xs-12 property-images">
+                                                        <t t-call="property_management_website.display_property_content" />
+                                                    </div>
+                                                </li>
+                                            </t>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </t>
+                </t>
+                <t t-call="property_management_website.custom_footer" />
+            </div>
+        </template>
+        <template id="sell_properties" name="Sell Properties">
+            <section class="hero-section">
+                <div class="hero-inner">
+                    <img src="/property_management_website/static/src/img/sell.jpg" class="img-responsive hero-image" />
+                    <div class="hero-content">
+                        <div class="tab">
+                            <div class="tab-cell">
+                                <h1 class="hero-text">
+                                    <a href="#">Sell Your Properties</a>
+                                </h1>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <div class="rest feature-properties">
+                <section class="recent-viewed-section section">
+                    <div class="container">
+                        <div class="row recent-viewed-header text-center">
+                            <div class="col-md-12">
+                                <h3>REQUEST A MARKET APPRAISAL</h3>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <hr />
+                <section>
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-8 col-xs-12 col-md-offset-2 sell-page-contact">
+                                <form id="saleForm" data-toggle="validator" class="mt32">
+                                    <div class="form-group col-md-6 col-xs-12">
+                                        <label class="control-label" for="first_name">First Name</label>
+                                        <input type="text" class="form-control" name="first_name" required="True" />
+                                    </div>
+                                    <div class="form-group col-md-6 col-xs-12">
+                                        <label class="control-label" for="last_name">Last Name</label>
+                                        <input type="text" class="form-control" name="last_name" required="True" />
+                                    </div>
+                                    <div class="form-group col-md-6 col-xs-12">
+                                        <label class="control-label" for="email_from">Email address </label>
+                                        <input type="email" class="form-control" name="email_from" data-error="Please enter valid Email address." required="True" />
+                                        <div class="help-block with-errors"></div>
+                                    </div>
+                                    <div class="form-group col-md-6 col-xs-12">
+                                        <label class="control-label" for="phone">Telephone number</label>
+                                        <input type="tel" class="form-control" name="phone" required="True" />
+                                    </div>
+                                    <div class="form-group col-md-12 col-xs-12">
+                                        <label class="control-label" for="address">Address</label>
+                                        <input type="text" class="form-control" name="address" required="True" />
+                                    </div>
+                                    <div class="form-group col-md-6 col-xs-12">
+                                        <label class="control-label" for="city">City</label>
+                                        <input type="text" class="form-control" name="city" required="True" />
+                                    </div>
+                                    <div class="form-group col-md-6 col-xs-12">
+                                        <label class="control-label" for="zip">Postcode</label>
+                                        <input type="text" class="form-control" name="zip" required="True" />
+                                    </div>
+                                    <div class="form-group col-md-6 col-xs-12">
+                                        <label class="control-label" for="country">Country</label>
+                                        <select class="form-control" name="country_id" required="True">
+                                            <option value="">Country</option>
+                                            <t t-foreach="countries or []" t-as="country">
+                                                <option t-att-value="country.id">
+                                                    <t t-esc="country.name" />
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-offset-3 col-md-6 col-xs-12">
+                                        <div id="display_success_msg" class="form-group alert alert-success" style="display:none;">
+                                            Your message has been sent successfully.
+            <!--		                        <button type="button" class="close" data-dismiss="alert">&amp;times;</button--></div>
+                                    </div>
+                                </form>
+                                <br />
+                                <div class="form-group">
+                                    <div class="col-md-offset-5 col-md-8 col-xs-12">
+                                        <button class="btn btn-primary btn-lg" id="submit_sale_form">Submit</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <hr />
+                <t t-call="property_management_website.testimonials" />
+                <hr />
+                <t t-call='property_management_website.past_sales'/>
+                <t t-call="property_management_website.custom_footer" />
+            </div>
+        </template>
+        <template id="sell_properties_onload" name="Sell">
+            <t t-call="website.layout">
+                <t t-call="property_management_website.sell_properties" />
+            </t>
+        </template>
+        <template id="buy_properties_onload" name="Buy">
+            <t t-call="website.layout">
+                <t t-call="property_management_website.buy_properties" />
+            </t>
+        </template>
+        <template id="buy_properties" name="Buy Properties">
+            <t t-call="property_management_website.allassetsale_content" />
+        </template>
+        <template id="rent_properties_onload" name="Rent">
+            <t t-call="website.layout">
+                <t t-call="property_management_website.rent_properties" />
+            </t>
+        </template>
+        <template id="rent_properties" name="Rent Properties">
+            <t t-call="property_management_website.allassetlease_content" />
+        </template>
+        <template id="contactus_onload" name="Contact us">
+            <t t-call="website.layout">
+                <t t-call="property_management_website.contactus_content" />
+            </t>
+        </template>
+        <template id="website.contactus" name="Website Contact us Inherit">
+            <t t-call="website.layout">
+                <t t-call="property_management_website.contactus_content" />
+            </t>
+        </template>
+        <template id="contactus_content" name="Contact us">
+            <section class="hero-section" style="height: 100%;position:inherit;">
+                <!--<script src="http://maps.googleapis.com/maps/api/js"></script>-->
+                <!--<iframe id="contacts-map"></iframe>-->
+                <div id="contacts-map"></div>
+                <div class="hero-content contact-form" style="box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);background: rgba(255, 255, 255, 0.615686);margin-left: 2%;text-align: -webkit-auto; position: absolute;">
+                    <form id="contactForm" data-toggle="validator" class="form-horizontal mt32 col-md-12">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label" for="contact_name">Your Name</label>
+                            <div class="col-md-7">
+                                <input type="text" class="form-control" name="contact_name" required="True" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-4 control-label" for="phone">Phone Number</label>
+                            <div class="col-md-7">
+                                <input type="tel" class="form-control" name="phone" />
+                            </div>
+                        </div>
+                        <div name="email_from_container" class="form-group has-feedback">
+                            <label class="col-md-4 control-label" for="email_from">Email</label>
+                            <div class="col-md-7">
+                                <input type="email" class="form-control" name="email_from" data-error="Please enter valid Email address." required="True" />
+                                <div class="help-block with-errors"></div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-4 control-label" for="partner_name">Your Company</label>
+                            <div class="col-md-7">
+                                <input type="text" class="form-control" name="partner_name" required="True" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-4 control-label" for="name">Subject</label>
+                            <div class="col-md-7">
+                                <input type="text" class="form-control" name="name" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-4 control-label" for="description">Your Question</label>
+                            <div class="col-md-7">
+                                <textarea class="form-control" name="description" style="min-height: 120px" required="True"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-4"></div>
+                            <div class="col-md-7">
+                                <div id="display_success_msg" class="alert alert-success" style="display:none;">
+                                        Your message has been sent successfully.
+        <!--		                        <button type="button" class="close" data-dismiss="alert">&amp;times;</button--></div>
+                            </div>
+                        </div>
+                        <!--
+							<div class="form-group">
+				                <div class="col-md-offset-4 col-sm-offset-4 col-sm-8 col-md-7">
+				                    <button class="btn btn-primary btn-lg" id="button_send">Send</button>
+				                </div>
+				            </div>
+							-->
+                    </form>
+                    <div class="col-md-offset-4 col-sm-offset-4 col-sm-8 col-md-7" style="margin-bottom: 5%;">
+                        <button class="btn btn-primary btn-lg" id="button_send">Send</button>
+                    </div>
+                </div>
+            </section>
+        </template>
+        <template id="allassetlease_onload" name="Assets Lease">
+            <t t-call="website.layout">
+                <t t-call="property_management_website.allassetlease_content" />
+            </t>
+        </template>
+        <template id="allassetsale_onload" name="Assets Sale">
+            <t t-call="website.layout">
+                <t t-call="property_management_website.allassetsale_content" />
+            </t>
+        </template>
+        <template id="allpastsales_onload" name="Past Sales">
+            <t t-call="website.layout">
+                <t t-call="property_management_website.allpastsales_content" />
+            </t>
+        </template>
+        <template id="allpastsales_content">
+            <div class="rest feature-properties">
+                <!--<section class='featured-past-sell-section section'>-->
+                <section class="recent-viewed-section section" id="allassetpast_sale_section">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-3" id="display_saved_properties">
+                                <input type="hidden" id="property_type" name="property_type" t-att-value="property_type" />
+                                <ul class="nav navbar-nav" style="width: 100%;">
+                                    <li style="cursor:pointer">
+                                        <a id="view_all_past_sales" class="active">Sales</a>
+                                    </li>
+                                    <li style="cursor:pointer">
+                                        <a id="view_all_asset_sale_saved"></a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="row recent-viewed-header text-center">
+                            <div class="col-md-12 mb16">
+                                <h3>FEATURED PAST SALE</h3>
+                            </div>
+                        </div>
+                        <t t-if="pager">
+                            <div class="row">
+                                <t t-call="property_management_website.view_pagination" />
+                            </div>
+                        </t>
+                        <t t-call="property_management_website.featured_past_sale_content" />
+                    </div>
+                </section>
+                <t t-call="property_management_website.custom_footer" />
+            </div>
+        </template>
+        <template id="allpastlease_onload" name="Past Lease">
+            <t t-call="website.layout">
+                <t t-call="property_management_website.allpastlease_content" />
+            </t>
+        </template>
+        <template id="featured_past_lease_content" name="Featured Past Lease Content">
+            <t t-foreach="all_property_objs" t-as="account_asset_one_lease">
+                <t t-if="(account_asset_one_lease.state == 'book' or account_asset_one_lease.state == 'normal')">
+                    <t t-call="property_management_website.dosplay_properties" />
+                </t>
+            </t>
+        </template>
+        <template id="allpastlease_content">
+            <div class="rest feature-properties">
+                <!--<section class='featured-past-sell-section section'>-->
+                <section class="recent-viewed-section section" id="allassetlease_sale_section">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-3" id="display_saved_properties">
+                                <input type="hidden" id="property_type" name="property_type" t-att-value="property_type" />
+                                <ul class="nav navbar-nav" style="width: 100%;">
+                                    <li style="cursor:pointer">
+                                        <a id="view_all_past_sales" class="active">Sales</a>
+                                    </li>
+                                    <li style="cursor:pointer">
+                                        <a id="view_all_asset_sale_saved"></a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="row recent-viewed-header text-center">
+                            <div class="col-md-12 mb16">
+                                <h3>FEATURED PAST LEASE</h3>
+                            </div>
+                        </div>
+                        <t t-if="pager">
+                            <div class="row">
+                                <t t-call="property_management_website.view_pagination" />
+                            </div>
+                        </t>
+                        <t t-call="property_management_website.featured_past_lease_content" />
+                    </div>
+                </section>
+                <t t-call="property_management_website.custom_footer" />
+            </div>
+        </template>
+        <template id="allsavedsales_onload" name="Assets Saved Sales">
+            <t t-call="website.layout">
+                <t t-call="property_management_website.allasset_saved_sale_content" />
+            </t>
+        </template>
+        <template name="All Aseets Saved Sale" id="allasset_saved_sale_content">
+            <div class="rest feature-properties">
+                <section class="recent-viewed-section section" id="allassetsavedproperty_section">
+                    <div class="container">
+                        <div class="row">
+                            <div id="display_saved_properties">
+                                <ul class="nav navbar-nav" style="width: 100%;">
+                                    <input type="hidden" id="property_type" name="property_type" t-att-value="property_type" />
+                                    <li style="cursor:pointer">
+                                        <a class="sales_type">Sales</a>
+                                    </li>
+                                    <li style="cursor:pointer">
+                                        <a id="view_all_asset_sale_saved" class="active"></a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="row recent-viewed-content">
+                            <t t-if="account_asset_all_sale_cookie_obj">
+                                <t t-foreach="account_asset_all_sale_cookie_obj" t-as="account_asset_one_lease">
+                                    <t t-call="property_management_website.dosplay_properties" />
+                                </t>
+                            </t>
+                        </div>
+                    </div>
+                </section>
+                <t t-call="property_management_website.custom_footer" />
+            </div>
+        </template>
+        <template id="my_properties_onload" name="My Properties">
+            <t t-call="website.layout">
+                <t t-call="property_management_website.my_properties_content" />
+            </t>
+        </template>
+        <template id="my_properties_content">
+            <div class="rest feature-properties">
+                <section class="recent-viewed-section section" id="my_property_section">
+                    <div class="container">
+                        <div class="row recent-viewed-header text-center">
+                            <div class="col-md-12 mb16">
+                                <h3>My Properties</h3>
+                            </div>
+                        </div>
+                        <t t-if="all_property_objs">
+                            <t t-foreach="all_property_objs" t-as="account_asset_one_lease">
+                                <t t-call="property_management_website.dosplay_properties" />
+                            </t>
+                        </t>
+                    </div>
+                </section>
+                <t t-call="property_management_website.custom_footer" />
+            </div>
+        </template>
+</odoo>

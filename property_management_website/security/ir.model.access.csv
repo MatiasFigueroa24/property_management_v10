@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+
+access_account_asset_asset_user,account.asset.asset.user,model_account_asset_asset,,1,1,1,1
+access_property_photo_user,property.photo.user,model_property_photo,,1,1,1,1
+access_website_setting,access_website_setting,model_website_setting,,1,0,0,0
+access_property_suggested,access_property_suggested,model_property_suggested,,1,0,0,0

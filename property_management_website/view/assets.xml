@@ -1,0 +1,208 @@
+<odoo>
+        <template id="assets_common" name="website common for backend" inherit_id="web.assets_common">
+            <xpath expr="." position="inside">
+              <script type="text/javascript" src="/property_management_website/static/src/js/pace.min.js"/>
+              
+            </xpath>
+        </template>
+
+        <template id="assets_frontend" name="website assets for frontend" inherit_id="website.assets_frontend">
+            <xpath expr="." position="inside">
+                <!--<link rel='stylesheet' href="/web/static/lib/jquery.ui/css/smoothness/jquery-ui-1.9.1.custom.css"/>
+                <t t-call="web.jqueryui_conflict">
+                    <script type="text/javascript" src="/web/static/lib/jquery.ui/js/jquery-ui-1.9.1.custom.js"></script>
+                </t>-->
+                <link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,400,300,600,700' rel='stylesheet' type='text/css'/>
+                <link rel="stylesheet" href="/property_management_website/static/src/css/style.css" />
+                <link rel="stylesheet" href="/property_management_website/static/src/css/sidebar.css" />
+<!--                <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js"></script-->
+<!--				<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&amp;sensor=false&amp;libraries=places"/>-->
+                
+                <link rel="stylesheet" href="/property_management_website/static/lib/jquery.ui/jquery-ui.css"/>
+                <script type="text/javascript" src="/property_management_website/static/src/js/google.map.js"/>
+                <script type="text/javascript" src="/property_management_website/static/src/js/google_map_script.js"/>
+             <!--  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCoaH60G3ijIxlPMEHdmPVqTfUgMCprpLo&libraries=places"/>   -->
+                <script type="text/javascript" src="/property_management_website/static/src/js/jquery.smoothwheel.js"/>
+                <link rel="stylesheet" href="/property_management_website/static/src/css/flexslider.css"/>
+                <script type="text/javascript" src="/property_management_website/static/src/js/sidebar.js"/>
+                <script type="text/javascript" src="/property_management_website/static/src/js/validator.js"/>
+                <link rel="stylesheet" href="/property_management_website/static/src/css/datepicker3.css"/>
+                <script type="text/javascript" src="/property_management_website/static/src/js/jquery.flexslider.js"/>
+                 <link rel="stylesheet" href="/property_management_website/static/src/css/rrssb.css"/>
+                <!--datepicker-->
+                <script type="text/javascript" src="/property_management_website/static/src/js/bootstrap-datepicker.js"/>
+                <!--css and jquery for share property in facebook,linkedin,twitter......-->
+                <script type="text/javascript" src="/property_management_website/static/src/js/rrssb.min.js"/>
+                <script type="text/javascript" src="/property_management_website/static/lib/jquery.ui/jquery-ui.js"/>
+                <script type="text/javascript" src="/property_management_website/static/src/js/home_page.js"/>
+                <script type="text/javascript" src="/property_management_website/static/src/js/property_view.js"/>
+
+            </xpath>
+        </template>
+
+        <!--code for display navbar to "Backend User" group -->
+
+
+        <template id="user_navbar" inherit_id="website.user_navbar">
+            <xpath expr="//nav[@id='oe_main_menu_navbar']" position="attributes">
+                <attribute name="groups">property_management_website.group_property_website_backend</attribute>
+            </xpath>
+        </template>
+
+
+        <template id="auth_signup.login" inherit_id="web.login" name="Sign up - Reset Password">
+            <xpath expr="//button[@type='submit']" position="before">
+                <!--<a t-if="signup_enabled" t-attf-href="/web/signup?{{ keep_query() }}" class="btn btn-link pull-right">Sign up</a>-->
+                <!--<a t-if="reset_password_enabled" t-attf-href="/web/reset_password?{{ keep_query() }}" class="btn btn-link pull-right">Reset Password</a>-->
+            </xpath>
+        </template>
+
+       <!-- <template id="remove_signup_button_in_login" inherit_id="auth_signup.login">
+            <xpath expr="//a['href=/web/signup?{{ keep_query() }}']" position="replace">
+            </xpath>
+        </template>
+
+        <template id="add_login1_in_signup_field" inherit_id="auth_signup.fields">
+            <xpath expr="//div['class=field-login']/input" position="attributes">
+                <attribute name="t-att-value">login1</attribute>
+            </xpath>
+        </template>-->
+
+        <template id="add_class_in_reset_password" inherit_id="auth_signup.reset_password">
+            <xpath expr="//form['class=oe_reset_password_form']" position="attributes">
+                <attribute name="class">col-md-4 col-md-offset-4 mt32</attribute>
+            </xpath>
+        </template>
+
+        <template id="add_login1_in_signup_field" inherit_id="auth_signup.fields">
+            <xpath expr="//div['class=field-login']/input" position="attributes">
+                <attribute name="t-att-value">login1</attribute>
+            </xpath>
+        </template>
+
+        <!--<template id="auth_oauth.providers" name="OAuth Providers">
+            <div t-foreach="providers" t-as="p">
+                <a t-att-href="p['auth_link']" class="btn btn-link">
+                    &lt;!&ndash;<t t-esc="p['body']"/>
+                    <i t-att-class="p['css_class']"/>&ndash;&gt;
+                    <img t-att-src="'data:image/png;base64,%s' % p['image']" style="width: 172px;height: 30px;"/>
+                </a>
+            </div>
+        </template>-->
+
+        <!--<template id="auth_signup.fields" name="Auth Signup/ResetPassword form fields">-->
+            <!--<t t-call="web.database_select"/>-->
+
+            <!--<div class="form-group field-login">-->
+                <!--<label for="login" class="control-label">Your Email</label>-->
+                <!--<input type="text" name="login" t-att-value="login1" id="login" class="form-control" autofocus="autofocus"-->
+                    <!--required="required" t-att-readonly="'readonly' if only_passwords else None"/>-->
+            <!--</div>-->
+
+            <!--<div class="form-group field-name">-->
+                <!--<label for="name" class="control-label">Your Name</label>-->
+                <!--<input type="text" name="name" t-att-value="name" id="name" class="form-control" placeholder="e.g. John Doe"-->
+                    <!--required="required" t-att-readonly="'readonly' if only_passwords else None"-->
+                    <!--t-att-autofocus="'autofocus' if login and not only_passwords else None" />-->
+            <!--</div>-->
+
+            <!--<div class="form-group field-password">-->
+                <!--<label for="password" class="control-label">Password</label>-->
+                <!--<input type="password" name="password" id="password" class="form-control"-->
+                    <!--required="required" t-att-autofocus="'autofocus' if only_passwords else None"/>-->
+            <!--</div>-->
+
+            <!--<div class="form-group field-confirm_password">-->
+                <!--<label for="confirm_password" class="control-label">Confirm Password</label>-->
+                <!--<input type="password" name="confirm_password" id="confirm_password" class="form-control" required="required"/>-->
+            <!--</div>-->
+        <!--</template>-->
+
+<!--        <template id="auth_oauth.providers" name="OAuth Providers">-->
+<!--            <div class="row">-->
+<!--                <div class="col-xs-12 mt16">-->
+<!--                    &lt;!&ndash;<p class="text-center" style="font-family: initial;font-size: large;"><b>or</b></p>&ndash;&gt;-->
+<!--                    <div style="width: 100%; height: 20px; border-bottom: 1px solid #ccc; text-align: center">-->
+<!--                      <span style="font-family: initial;font-size: 24px; background-color: #f5f1ed; padding: 0 10px;">-->
+<!--                        <b>or</b> &lt;!&ndash;Padding is optional&ndash;&gt;-->
+<!--                      </span>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <div class="row">-->
+<!--                <div class="col-xs-12 mt16">-->
+<!--                    <div class='col-xs-3' t-foreach="providers" t-as="p">-->
+<!--                        <a t-att-href="p['auth_link']" >-->
+<!--                            <img t-att-src="'data:image/png;base64,%s' % p['image']" style="width:57px;height:57px;"/>-->
+<!--                        </a>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </template>-->
+
+<!--        <template id="auth_oauth.login" inherit_id="web.login" name="OAuth Login buttons">-->
+<!--            <xpath expr="//button[@type='submit']" position="after">-->
+<!--                    <t t-call="auth_oauth.providers"/>-->
+<!--            </xpath>-->
+<!--        </template>-->
+
+<!--        <template id="web.login" name="Login">-->
+<!--            <t t-call="web.login_layout">-->
+<!--                <div class="container">-->
+<!--                      <div class="row" id="login-page-content" style="padding:6%;">-->
+<!--                            <div class="login-first-half col-md-6 col-xs-12" style="border-right: 2px solid #ccc;">-->
+<!--                                <form class="oe_login_form col-xs-10 col-xs-offset-1" role="form" t-attf-action="/web/login{{ '?debug' if debug else '' }}" method="post" onsubmit="this.action = this.action + location.hash" style="padding: 14px;">-->
+<!--                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>-->
+<!--                                    <div class="row" style="padding: 14px;">-->
+<!--                                        <h3>Login</h3>-->
+<!--                                    </div>-->
+<!--                                    <hr style="margin-top: 0px;"/>-->
+<!--                                    <div class="form-group field-login">-->
+<!--                                        <label for="login" class="control-label">Email</label>-->
+<!--                                        <input type="text" name="login" t-att-value="login" id="login" class="form-control" required="required" autofocus="autofocus"/>-->
+<!--                                    </div>-->
+<!--                                    <div class="form-group field-password">-->
+<!--                                        <label for="password" class="control-label">Password</label>-->
+<!--                                        <input type="password" name="password" id="password" class="form-control" required="required" t-att-autofocus="'autofocus' if login else None"/>-->
+<!--                                    </div>-->
+<!--                                    <p class="alert alert-danger" t-if="error">-->
+<!--                                        <t t-esc="error"/>-->
+<!--                                    </p>-->
+<!--                                    <p class="alert alert-success" t-if="message">-->
+<!--                                        <t t-esc="message"/>-->
+<!--                                    </p>-->
+<!--                                    <input type="hidden" name="redirect" t-att-value="redirect"/>-->
+<!--                                    <div class="clearfix oe_login_buttons">-->
+<!--                                        <a t-if="reset_password_enabled" t-attf-href="/web/reset_password?{{ keep_query() }}" class="btn btn-link pull-right">Reset Password</a>-->
+<!--                                        <button type="submit" class="btn btn-primary pull-right">Log in</button>-->
+<!--                                    </div>-->
+<!--                                </form>-->
+<!--                            </div>-->
+<!--                            <div class="col-md-6 col-xs-12" style="padding-bottom: 8%;" >-->
+<!--                                <form action="/web/signup" class="oe_signup_form col-xs-10 col-xs-offset-1" role="form" method="post" t-if="not message" style="padding: 14px;">-->
+<!--                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>-->
+<!--                                    <div class="row" style="padding: 14px;">-->
+<!--                                        <h3>SignUp</h3>-->
+<!--                                    </div>-->
+<!--                                    <hr style="margin-top: 0px;"/>-->
+<!--                                    <t t-call="auth_signup.fields">-->
+<!--                                        <t t-set="only_passwords" t-value="bool(token)"/>-->
+<!--                                    </t>-->
+<!--                                    <p class="alert alert-danger" t-if="error1">-->
+<!--                                        <t t-esc="error1"/>-->
+<!--                                    </p>-->
+<!--                                    <input type="hidden" name="redirect" t-att-value="redirect"/>-->
+<!--                                    <input type="hidden" name="token" t-att-value="token"/>-->
+<!--                                    <div class="clearfix oe_login_buttons">-->
+<!--                                        &lt;!&ndash;<a t-attf-href="/web/login?{{ keep_query() }}" class="btn btn-link pull-right">Back to Login</a>&ndash;&gt;-->
+<!--                                        <button type="submit" class="btn btn-primary pull-right">Sign up</button>-->
+<!--                                    </div>-->
+<!--                                </form>-->
+<!--                            </div>-->
+<!--                      </div>-->
+<!--                </div>-->
+<!--                <t t-call='property_management_website.custom_footer'/>-->
+<!--            </t>-->
+<!--        </template>-->
+
+</odoo>
